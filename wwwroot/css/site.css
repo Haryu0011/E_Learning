@@ -1,0 +1,709 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
+
+.login-page {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, Helvetica, sans-serif;
+    background-image: url('/images/login-background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+}
+
+.login-overlay {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+}
+
+.login-card {
+    width: min(650px, 100%);
+    background: rgba(255, 255, 255, 0.96);
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 14px;
+    padding: 58px 34px 48px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+}
+
+.login-header {
+    margin-bottom: 38px;
+}
+
+    .login-header h1 {
+        margin: 0 0 10px;
+        font-size: 3rem;
+        font-weight: 400;
+        color: #111;
+    }
+
+    .login-header p {
+        margin: 0;
+        font-size: 1.05rem;
+        line-height: 1.5;
+        color: #3f3f3f;
+    }
+
+.login-field {
+    margin-bottom: 28px;
+}
+
+    .login-field label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 1.05rem;
+        font-weight: 400;
+        color: #111;
+    }
+
+.login-input {
+    height: 50px;
+    border: 2px solid #888;
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-size: 1rem;
+    box-shadow: none;
+}
+
+    .login-input:focus {
+        border-color: #168897;
+        box-shadow: 0 0 0 0.15rem rgba(22, 136, 151, 0.15);
+    }
+
+    .login-input::placeholder {
+        color: #888;
+    }
+
+.password-wrapper {
+    position: relative;
+}
+
+    .password-wrapper .login-input {
+        padding-right: 52px;
+    }
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 1.1rem;
+    color: #111;
+    cursor: pointer;
+}
+
+    .password-toggle:hover {
+        opacity: 0.7;
+    }
+
+.login-button {
+    display: block;
+    width: 300px;
+    max-width: 100%;
+    height: 60px;
+    margin: 32px auto 0;
+    border: 0;
+    border-radius: 12px;
+    background-color: #148797;
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+    .login-button:hover {
+        background-color: #117887;
+        transform: translateY(-1px);
+    }
+
+    .login-button:active {
+        transform: translateY(0);
+    }
+
+@media (max-width: 768px) {
+
+    .login-page {
+        background-position: center;
+    }
+
+    .login-overlay {
+        padding: 20px;
+    }
+
+    .login-card {
+        padding: 40px 24px 36px;
+    }
+
+    .login-header h1 {
+        font-size: 2.4rem;
+    }
+
+    .login-button {
+        width: 100%;
+    }
+}
+
+/* =========================================================
+   STUDENT TASK PAGE
+   ========================================================= */
+
+.student-page {
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.student-shell {
+    display: grid;
+    grid-template-columns: 180px minmax(500px, 1fr) 320px;
+    min-height: calc(100vh - 1px);
+}
+
+/* ---------- LEFT PANEL ---------- */
+
+.student-sidebar {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #e5e5e5;
+    background: #ffffff;
+    padding: 20px 14px;
+}
+
+.student-brand {
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.student-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.student-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    color: #222;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+    .student-nav-link:hover {
+        background: #f4f4f4;
+        color: #222;
+    }
+
+    .student-nav-link.active {
+        background: #dff4f5;
+        color: #117f8b;
+        font-weight: 600;
+    }
+
+.student-logout {
+    margin-top: auto;
+}
+
+    .student-logout button {
+        width: 100%;
+        padding: 9px 12px;
+        border: 0;
+        border-radius: 8px;
+        background: #dc3545;
+        color: #ffffff;
+        font-weight: 600;
+    }
+
+/* ---------- MAIN PANEL ---------- */
+
+.student-main {
+    min-width: 0;
+    padding: 28px 30px;
+}
+
+.student-page-title {
+    margin-bottom: 22px;
+}
+
+    .student-page-title h1 {
+        margin: 0;
+        font-size: 1.7rem;
+        font-weight: 700;
+    }
+
+    .student-page-title p {
+        margin: 4px 0 0;
+        color: #777;
+    }
+
+/* ---------- FILTERS ---------- */
+
+.student-filters {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+}
+
+.student-filter {
+    border: 1px solid #d9d9d9;
+    border-radius: 7px;
+    background: #ffffff;
+    color: #333;
+    padding: 6px 13px;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+    .student-filter:hover {
+        background: #f5f5f5;
+        color: #333;
+    }
+
+    .student-filter.active {
+        background: #178796;
+        border-color: #178796;
+        color: #ffffff;
+    }
+
+/* ---------- TASK TABLE ---------- */
+
+.student-task-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+}
+
+    .student-task-table thead th {
+        padding: 11px 12px;
+        background: #f7f7f7;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .student-task-table tbody tr {
+        border-bottom: 1px solid #ececec;
+        cursor: pointer;
+    }
+
+        .student-task-table tbody tr:hover {
+            background: #ffffff;
+        }
+
+        /* Selected row changes only when selected/clicked */
+        .student-task-table tbody tr.selected {
+            background: #dff4f5;
+        }
+
+    .student-task-table tbody td {
+        padding: 12px;
+        vertical-align: middle;
+    }
+
+/* ---------- STATUS BADGES ---------- */
+
+.student-status {
+    display: inline-block;
+    padding: 4px 9px;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.student-status-kosong {
+    background: #eeeeee;
+    color: #555;
+}
+
+.student-status-telat {
+    background: #ffe3e3;
+    color: #c62828;
+}
+
+.student-status-terkirim {
+    background: #ddf7e8;
+    color: #16834c;
+}
+
+/* ---------- DETAILS PANEL ---------- */
+
+.student-details {
+    background: #FCFCFC;
+    border-left: 1px solid #E8E8E8;
+    padding: 28px 24px;
+    overflow-y: auto;
+}
+
+.student-details-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 22px;
+}
+
+.student-task-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: #DDF4F5;
+    color: #177D8D;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.student-details-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #177D8D;
+}
+
+.student-details-subject {
+    font-size: .9rem;
+    color: #6D6D6D;
+}
+
+.student-card {
+    background: white;
+    border: 1px solid #ECECEC;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 18px;
+}
+
+.student-card-title {
+    font-size: .9rem;
+    font-weight: 700;
+    color: #177D8D;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.student-card-body {
+    color: #444;
+    font-size: .9rem;
+    line-height: 1.5;
+}
+
+.student-file-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 12px;
+    border: 1px solid #ECECEC;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: #FAFAFA;
+}
+
+.student-file-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #333;
+    font-size: .9rem;
+}
+
+.student-file-button {
+    border: none;
+    background: #177D8D;
+    color: white;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: .8rem;
+}
+
+.student-upload-area {
+    border: 2px dashed #8ECED3;
+    border-radius: 12px;
+    background: #F8FFFF;
+    padding: 22px;
+    text-align: center;
+}
+
+    .student-upload-area input {
+        margin-top: 15px;
+    }
+
+.student-submit-button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: #178796;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1100px) {
+    .student-shell {
+        grid-template-columns: 160px minmax(420px, 1fr) 280px;
+    }
+
+    .student-main {
+        padding: 22px;
+    }
+
+    .student-details {
+        padding: 22px 18px;
+    }
+}
+
+@media (max-width: 850px) {
+    .student-shell {
+        grid-template-columns: 150px 1fr;
+    }
+
+    .student-details {
+        display: none;
+    }
+}
+
+/* =========================================================
+   STUDENT DETAILS CONTENT
+   ========================================================= */
+
+.student-material-file {
+    display: flex;
+    align-items: center;
+    padding: 9px 10px;
+    margin-bottom: 7px;
+    border: 1px solid #e1e1e1;
+    border-radius: 7px;
+    background: #fafafa;
+}
+
+    .student-material-file a {
+        color: #176f82;
+        text-decoration: none;
+    }
+
+        .student-material-file a:hover {
+            text-decoration: underline;
+        }
+
+.student-submission-info {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.student-grade {
+    padding: 10px 12px;
+    border-radius: 7px;
+    background: #e4f6eb;
+    color: #176f4a;
+}
+
+.student-late-warning {
+    margin-bottom: 14px;
+    padding: 12px;
+    border: 1px solid #f1b7b7;
+    border-radius: 8px;
+    background: #fff0f0;
+    color: #b42323;
+    font-size: 0.88rem;
+}
+
+    .student-late-warning strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+.student-upload-box {
+    margin-bottom: 12px;
+}
+
+.student-upload-help {
+    margin-top: 6px;
+    font-size: 0.78rem;
+    color: #777;
+}
+
+.student-submit-button {
+    width: 100%;
+    padding: 11px 15px;
+    border: 0;
+    border-radius: 8px;
+    background: #178796;
+    color: #fff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .student-submit-button:hover {
+        background: #127684;
+    }
+
+/* =========================================================
+   SUBMISSION SUCCESS POPUP
+   ========================================================= */
+
+.submission-popup-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.28);
+}
+
+.submission-popup {
+    width: min(430px, 100%);
+    background: #ffffff;
+    border: 1px solid #dcdcdc;
+    border-radius: 12px;
+    padding: 26px 28px 24px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+    text-align: center;
+}
+
+.submission-popup-icon {
+    width: 76px;
+    height: 76px;
+    margin: 0 auto 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: #20e86d;
+    color: #ffffff;
+    font-size: 2.6rem;
+    font-weight: 700;
+}
+
+.submission-popup-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 18px;
+}
+
+.submission-popup-divider {
+    height: 1px;
+    background: #e5e5e5;
+    margin-bottom: 18px;
+}
+
+.submission-popup-content {
+    text-align: left;
+    margin-bottom: 22px;
+}
+
+.submission-popup-section-title {
+    margin-bottom: 10px;
+    color: #17728a;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.submission-popup-file {
+    padding: 7px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.submission-popup-button {
+    width: 100%;
+    padding: 11px 16px;
+    border: 0;
+    border-radius: 8px;
+    background: #178796;
+    color: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+    .submission-popup-button:hover {
+        background: #127684;
+    }
+
+/* =========================================================
+   FAILED SUBMISSION POPUP
+   ========================================================= */
+
+.student-error-message {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 2100;
+    width: min(380px, calc(100% - 48px));
+    padding: 16px 18px;
+    border: 1px solid #e5b7b7;
+    border-radius: 9px;
+    background: #fff0f0;
+    color: #9f2020;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+    .student-error-message strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .student-error-message button {
+        margin-top: 12px;
+        padding: 5px 12px;
+        border: 1px solid #c44;
+        border-radius: 6px;
+        background: #ffffff;
+        color: #9f2020;
+        cursor: pointer;
+    }

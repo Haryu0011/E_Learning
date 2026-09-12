@@ -1,0 +1,118 @@
+﻿@model E_Learning.ViewModels.GradeSubmissionViewModel
+
+@{
+	ViewData["Title"] = "Nilai Tugas";
+}
+
+<h1>Nilai Tugas</h1>
+
+<hr />
+
+<div class="mb-3">
+	<strong>Tugas:</strong>
+	@Model.TaskTitle
+</div>
+
+<div class="mb-3">
+	<strong>Siswa:</strong>
+	@Model.StudentEmail
+</div>
+
+<div class="mb-3">
+	<strong>Deadline:</strong>
+	@Model.DueDate.ToString("dd/MM/yyyy HH:mm")
+</div>
+
+<div class="mb-3">
+	<strong>Dikumpulkan:</strong>
+	@Model.SubmittedAt.ToString("dd/MM/yyyy HH:mm")
+</div>
+
+@if (Model.IsLate)
+{
+	<div class="alert alert-danger">
+		<strong>TERLAMBAT</strong><br />
+		Pengumpulan dilakukan setelah batas waktu.
+	</div>
+}
+else
+{
+	<div class="alert alert-success">
+		<strong>TEPAT WAKTU</strong><br />
+		Pengumpulan dilakukan sebelum batas waktu.
+	</div>
+}
+
+<hr />
+
+<h4>Jawaban Siswa</h4>
+
+@if (Model.Attachments.Any())
+{
+	<ul>
+		@foreach (var attachment in Model.Attachments)
+		{
+			<li>
+				<a href="@attachment.FilePath"
+				   target="_blank">
+					@attachment.FileName
+				</a>
+			</li>
+		}
+	</ul>
+}
+else
+{
+	<p>Tidak ada file jawaban.</p>
+}
+
+<hr />
+
+@if (Model.IsGraded)
+{
+	<div class="alert alert-info">
+		<strong>Nilai:</strong> @Model.Score
+	</div>
+
+	<p><b>Nilai sudah disimpan dan tidak dapat diubah.</b></p>
+}
+else
+{
+	<form asp-controller="Teacher"
+		  asp-action="Grade"
+		  asp-route-id="@Model.SubmissionId"
+		  method="post">
+
+		<div asp-validation-summary="ModelOnly"
+			 class="text-danger"></div>
+
+		<div class="mb-3">
+			<label asp-for="Score" class="form-label">
+				Nilai
+			</label>
+
+			<input asp-for="Score"
+				   class="form-control"
+				   type="number"
+				   min="0"
+				   max="100" />
+
+			<span asp-validation-for="Score"
+				  class="text-danger"></span>
+		</div>
+
+		<button type="submit" class="btn btn-primary">
+			Simpan Nilai
+		</button>
+	</form>
+}
+
+<a asp-controller="Teacher"
+   asp-action="Submissions"
+   asp-route-id="@Model.TaskId"
+   class="btn btn-secondary">
+	Kembali
+</a>
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

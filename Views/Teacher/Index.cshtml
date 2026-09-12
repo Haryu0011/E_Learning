@@ -1,0 +1,77 @@
+﻿@model List<E_Learning.ViewModels.TeacherTaskViewModel>
+
+@{
+    ViewData["Title"] = "Teacher Dashboard";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h1>Teacher Dashboard</h1>
+        <p>Welcome, @User.Identity?.Name</p>
+    </div>
+
+    <a asp-controller="Teacher"
+       asp-action="Create"
+       class="btn btn-primary">
+        Buat Tugas
+    </a>
+</div>
+
+<hr />
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Belum ada tugas yang dibuat.
+    </div>
+}
+else
+{
+    <div class="row">
+        @foreach (var task in Model)
+        {
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            @task.Title
+                        </h5>
+
+                        <p class="card-text">
+                            <strong>Mata Pelajaran:</strong>
+                            @task.Subject
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Batas Pengumpulan:</strong>
+                            @task.DueDate.ToString("dd/MM/yyyy HH:mm")
+                        </p>
+
+                        <hr />
+
+                        <p class="card-text">
+                            <strong>Pengumpulan:</strong>
+                            @task.SubmissionCount
+                        </p>
+
+                        <p class="card-text">
+                            <strong>Sudah Dinilai:</strong>
+                            @task.GradedCount
+                            /
+                            @task.SubmissionCount
+                        </p>
+
+                        <a asp-controller="Teacher"
+                           asp-action="Submissions"
+                           asp-route-id="@task.Id"
+                           class="btn btn-primary">
+                            Lihat Pengumpulan
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

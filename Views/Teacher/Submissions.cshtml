@@ -1,0 +1,122 @@
+﻿@model List<E_Learning.ViewModels.TeacherSubmissionViewModel>
+
+@{
+    ViewData["Title"] = "Pengumpulan Siswa";
+}
+
+<h1><b>Pengumpulan Siswa</b></h1>
+
+
+<h4>@ViewBag.TaskTitle</h4>
+
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        Belum ada siswa yang mengumpulkan tugas.
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Siswa</th>
+                <th>Deadline</th>
+                <th>Waktu Pengumpulan</th>
+                <th>Status</th>
+                <th>Nilai</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var submission in Model)
+            {
+                <tr>
+                    <td>
+                        @submission.StudentEmail
+                    </td>
+
+                    <td>
+                        @submission.DueDate.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+
+                    <td>
+                        @submission.SubmittedAt.ToString("dd/MM/yyyy HH:mm")
+                    </td>
+
+                    <td>
+                        @if (submission.IsLate)
+                        {
+                            <span class="badge bg-danger fs-6">
+                                TERLAMBAT
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success fs-6">
+                                TEPAT WAKTU
+                            </span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (submission.IsGraded)
+                        {
+                            <strong>@submission.Score</strong>
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                Belum dinilai
+                            </span>
+                        }
+                    </td>
+
+                    <td>
+                        @if (!submission.IsGraded)
+                        {
+                            <a asp-controller="Teacher"
+                               asp-action="Grade"
+                               asp-route-id="@submission.SubmissionId"
+                               class="btn btn-primary btn-sm">
+                                Nilai
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Teacher"
+                               asp-action="Grade"
+                               asp-route-id="@submission.SubmissionId"
+                               class="btn btn-secondary btn-sm">
+                                Lihat
+                            </a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<a asp-controller="Teacher"
+   asp-action="Index"
+   class="btn btn-secondary">
+    Kembali
+</a>

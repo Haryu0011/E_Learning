@@ -1,0 +1,141 @@
+﻿@model E_Learning.ViewModels.StudentTaskDetailViewModel
+
+@{
+    ViewData["Title"] = "Detail Tugas";
+}
+
+<h1>@Model.Title</h1>
+
+<div class="mb-3">
+    <strong>Mata Pelajaran:</strong>
+    @Model.Subject
+</div>
+
+<div class="mb-3">
+    <strong>Batas Pengumpulan:</strong>
+    @Model.DueDate.ToString("dd/MM/yyyy HH:mm")
+</div>
+
+<hr />
+
+<h4>Deskripsi</h4>
+
+<div class="mb-4">
+    @Model.Description
+</div>
+
+@if (Model.Attachments.Any())
+{
+    <h4>Lampiran Tugas</h4>
+
+    <ul>
+        @foreach (var attachment in Model.Attachments)
+        {
+            <li>
+                <a href="@attachment.FilePath" target="_blank">
+                    @attachment.FileName
+                </a>
+            </li>
+        }
+    </ul>
+}
+
+<hr />
+
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["Error"]
+    </div>
+}
+
+@if (Model.IsSubmitted)
+{
+    <div class="alert alert-success">
+        Tugas sudah dikumpulkan pada
+        @Model.SubmittedAt?.ToString("dd/MM/yyyy HH:mm").
+    </div>
+
+    <h4>Jawaban Anda</h4>
+
+    <ul>
+        @foreach (var attachment in Model.SubmissionAttachments)
+        {
+            <li>
+                <a href="@attachment.FilePath" target="_blank">
+                    @attachment.FileName
+                </a>
+            </li>
+        }
+    </ul>
+
+    @if (Model.Score.HasValue)
+    {
+        <div class="alert alert-info">
+            <strong>Nilai:</strong> @Model.Score
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-secondary">
+            Tugas belum dinilai.
+        </div>
+    }
+}
+else
+{
+    <h4>Kumpulkan Jawaban</h4>
+
+    @if (DateTime.Now > Model.DueDate)
+    {
+        <div class="alert alert-warning">
+            <strong>Perhatian:</strong>
+            Batas pengumpulan sudah lewat.
+            Pengumpulan ini akan tercatat sebagai
+            <strong>terlambat</strong>.
+        </div>
+    }
+
+    <form asp-controller="Student"
+          asp-action="Submit"
+          asp-route-id="@Model.Id"
+          method="post"
+          enctype="multipart/form-data">
+
+        <div class="mb-3">
+            <label asp-for="SubmissionFiles"
+                   class="form-label">
+                File Jawaban
+            </label>
+
+            <input asp-for="SubmissionFiles"
+                   type="file"
+                   class="form-control"
+                   multiple />
+
+            <div class="form-text">
+                Pilih file jawaban yang akan dikumpulkan.
+            </div>
+        </div>
+
+        <button type="submit"
+                class="btn btn-primary">
+            Kumpulkan Tugas
+        </button>
+    </form>
+}
+
+<br />
+
+<a asp-controller="Student"
+   asp-action="Index"
+   class="btn btn-secondary">
+    Kembali
+</a>
