@@ -1,7 +1,9 @@
-﻿@model E_Learning.ViewModels.StudentDashboardViewModel
+﻿@using E_Learning.Helpers
+@model E_Learning.ViewModels.StudentDashboardViewModel
 
 @{
     ViewData["Title"] = "Tugas";
+    Layout = "_StudentLayout";
 }
 
 <div class="student-page">
@@ -14,7 +16,7 @@
         <div class="submission-popup">
 
             <div class="submission-popup-icon">
-                ✓
+                <i class="bi bi-check-lg"></i>
             </div>
 
             <div class="submission-popup-title">
@@ -35,6 +37,7 @@
                     @foreach (var attachment in Model.SelectedTask.SubmissionAttachments)
                     {
                         <div class="submission-popup-file">
+                            <i class="bi @FileIconHelper.GetIcon(attachment.FileName)"></i>
                             @attachment.FileName
                         </div>
                     }
@@ -80,41 +83,7 @@
 
     <div class="student-shell">
 
-        <!-- LEFT SIDE PANEL -->
-        <aside class="student-sidebar">
-
-            <nav class="student-nav">
-
-                <a asp-controller="Student"
-                   asp-action="Index"
-                   class="student-nav-link active">
-                    Dashboard
-                </a>
-
-                <a asp-controller="Student"
-                   asp-action="History"
-                   class="student-nav-link">
-                    Riwayat
-                </a>
-
-            </nav>
-
-            <div class="student-logout">
-
-                <form asp-area="Identity"
-                      asp-page="/Account/Logout"
-                      asp-route-returnUrl="/Identity/Account/Login"
-                      method="post">
-
-                    <button type="submit">
-                        Keluar
-                    </button>
-
-                </form>
-
-            </div>
-
-        </aside>
+        @await Html.PartialAsync("_StudentSidebar", "Dashboard")
 
         <!-- MAIN PANEL -->
         <main class="student-main">
@@ -235,242 +204,11 @@
 
         </main>
 
-        <!-- RIGHT DETAILS PANEL -->
-        <aside class="student-details">
-
-        @if (Model.SelectedTask == null)
-        {
-            <div class="student-details-empty">
-                <div>
-                    <p>Pilih tugas untuk melihat detail.</p>
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="student-details-header">
-
-                <div class="student-task-icon">
-                    ◉
-                </div>
-
-                <div>
-                    <div class="student-details-title">
-                        @Model.SelectedTask.Title
-                    </div>
-
-                    <div class="student-details-subject">
-                        @Model.SelectedTask.Subject
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- DEADLINE -->
-
-            <div class="student-card">
-
-                <div class="student-card-title">
-                    ◉ Tenggat Waktu
-                </div>
-
-                <div class="student-card-body">
-                    @Model.SelectedTask.DueDate.ToString("dd/MM/yyyy, HH:mm")
-                </div>
-
-            </div>
-
-            <!-- DESCRIPTION -->
-
-            <div class="student-card">
-
-                <div class="student-card-title">
-                    ◉ Deskripsi
-                </div>
-
-                <div class="student-card-body">
-                    @Model.SelectedTask.Description
-                </div>
-
-            </div>
-
-            <!-- MATERIAL -->
-
-            @if (Model.SelectedTask.Attachments.Any())
-            {
-                <div class="student-card">
-
-                    <div class="student-card-title">
-                        ◉ Instruksi & Materi
-                    </div>
-
-                    @foreach (var attachment in Model.SelectedTask.Attachments)
-                    {
-                        <div class="student-file-item">
-
-                            <div class="student-file-name">
-                                ◉
-                                @attachment.FileName
-                            </div>
-
-                            <a href="@attachment.FilePath"
-                               target="_blank"
-                               class="student-file-button text-decoration-none">
-                                Lihat
-                            </a>
-
-                        </div>
-                    }
-
-                </div>
-            }
-
-            <!-- STATUS -->
-
-            <div class="student-card">
-
-                <div class="student-card-title">
-                    ◉ Status
-                </div>
-
-                @if (Model.SelectedTask.IsSubmitted)
-                {
-                    <span class="student-status student-status-terkirim">
-                        Terkirim
-                    </span>
-                }
-                else if (DateTime.Now > Model.SelectedTask.DueDate)
-                {
-                    <span class="student-status student-status-telat">
-                        Telat
-                    </span>
-                }
-                else
-                {
-                    <span class="student-status student-status-kosong">
-                        Kosong
-                    </span>
-                }
-
-            </div>
-
-            @if (Model.SelectedTask.IsSubmitted)
-            {
-                <!-- SUBMISSION RESULT -->
-
-                <div class="student-card">
-
-                    <div class="student-card-title">
-                        ◉ Jawaban Terkirim
-                    </div>
-
-                    <div class="student-card-body mb-3">
-                        Dikumpulkan pada
-                        <strong>
-                            @Model.SelectedTask.SubmittedAt?.ToString("dd/MM/yyyy, HH:mm")
-                        </strong>
-                    </div>
-
-                    @foreach (var attachment in Model.SelectedTask.SubmissionAttachments)
-                    {
-                        <div class="student-file-item">
-
-                            <div class="student-file-name">
-                                ◉
-                                @attachment.FileName
-                            </div>
-
-                            <a href="@attachment.FilePath"
-                               target="_blank"
-                               class="student-file-button text-decoration-none">
-                                Lihat
-                            </a>
-
-                        </div>
-                    }
-
-                    @if (Model.SelectedTask.Score.HasValue)
-                    {
-                        <div class="alert alert-success mt-3 mb-0">
-                            ◉ Nilai :
-                            <strong>@Model.SelectedTask.Score</strong>
-                        </div>
-                    }
-
-                </div>
-            }
-            else
-            {
-                <!-- SUBMIT -->
-
-                <div class="student-card">
-
-                    <div class="student-card-title">
-                        ◉ Lampiran Jawaban
-                    </div>
-
-                    @if (DateTime.Now > Model.SelectedTask.DueDate)
-                    {
-                        <div class="student-late-warning">
-                            <strong>TERLAMBAT</strong><br />
-                            Pengumpulan tetap diperbolehkan.
-                        </div>
-                    }
-
-                    <form asp-controller="Student"
-                          asp-action="Submit"
-                          asp-route-id="@Model.SelectedTask.Id"
-                          method="post"
-                          enctype="multipart/form-data">
-
-                        <div class="student-upload-area">
-
-                            <div>◉</div>
-
-                            <p class="mt-2 mb-2">
-                                Pilih file jawaban untuk dikumpulkan.
-                            </p>
-
-                            <input type="file"
-                                   name="SubmissionFiles"
-                                   multiple
-                                   class="form-control" />
-
-                            <small class="text-muted">
-                                PDF, DOCX, ZIP, JPG, PNG
-                            </small>
-
-                        </div>
-
-                        <button type="submit"
-                                class="student-submit-button">
-                            Kirim
-                        </button>
-
-                    </form>
-
-                </div>
-            }
-        }
-
-        </aside>
+        @await Html.PartialAsync("_TaskDetailPanel", Model.SelectedTask)
 
     </div>
 
 </div>
-
-<!-- Clicking Behaviour -->
-<script>
-    document.querySelectorAll(".task-row").forEach(row => {
-        row.addEventListener("click", function () {
-            const url = this.dataset.url;
-
-            if (url) {
-                window.location.href = url;
-            }
-        });
-    });
-</script>
 
 <!-- Submission Success Popup Behaviour -->
 <script>

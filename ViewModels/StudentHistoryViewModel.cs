@@ -14,4 +14,10 @@
 
         public bool IsGraded { get; set; }
     }
+
+    public class StudentHistoryPageViewModel
+    {
+        public List<StudentHistoryViewModel> Items { get; set; } = new();
+        public StudentTaskDetailViewModel? SelectedTask { get; set; }
+    }
 }

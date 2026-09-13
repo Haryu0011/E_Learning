@@ -1,0 +1,333 @@
+﻿@using E_Learning.Helpers
+@model E_Learning.ViewModels.StudentTaskDetailViewModel?
+
+<!-- RIGHT DETAILS PANEL -->
+<aside class="student-details">
+
+@if (Model == null)
+{
+    <div class="student-details-empty">
+        <div>
+            <div class="kaomoji" style="font-size: 36px;font-weight: bold;">o(^-^o)</div>
+            <p>Pilih tugas untuk melihat detail.</p>
+        </div>
+    </div>
+}
+else
+{
+    string statusClass;
+    string statusText;
+
+    if (Model.IsSubmitted)
+    {
+        statusClass = "student-status-terkirim";
+        statusText = "Terkirim";
+    }
+    else if (DateTime.Now > Model.DueDate)
+    {
+        statusClass = "student-status-telat";
+        statusText = "Telat";
+    }
+    else
+    {
+        statusClass = "student-status-kosong";
+        statusText = "Kosong";
+    }
+
+    <!-- TITLE + STATUS -->
+
+    <div class="task-header">
+        <div class="task-title">
+            @Model.Title
+        </div>
+
+        <span class="student-status @statusClass">
+            @statusText
+        </span>
+    </div>
+
+    <!-- SUBJECT + DEADLINE -->
+
+    <div class="task-meta">
+
+        <div class="meta-row">
+            <i class="bi bi-book meta-icon"></i>
+            <div>
+                <div class="meta-label">Mata Pelajaran</div>
+                <div class="meta-value">@Model.Subject</div>
+            </div>
+        </div>
+
+        <div class="meta-row">
+            <i class="bi bi-calendar3 meta-icon"></i>
+            <div>
+                <div class="meta-label">Tenggat Waktu</div>
+                <div class="meta-value">
+                    @Model.DueDate.ToString("dd/MM/yyyy, HH:mm")
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <hr />
+
+    <!-- DESCRIPTION -->
+
+    <div class="task-section">
+        <div class="section-heading">Deskripsi</div>
+        <div class="section-body">@Model.Description</div>
+    </div>
+
+    <!-- MATERIAL -->
+
+    @if (Model.Attachments.Any())
+    {
+        <div class="task-section">
+
+            <div class="section-heading">Instruksi dan Materi</div>
+
+            @foreach (var attachment in Model.Attachments)
+            {
+                <div class="student-file-item">
+
+                    <div class="student-file-name">
+                        <i class="bi bi-paperclip"></i>
+                        <a href="@attachment.FilePath"
+                           target="_blank"
+                           class="file-link file-text">
+                            @attachment.FileName
+                        </a>
+                    </div>
+
+                    <a href="@attachment.FilePath"
+                       target="_blank"
+                       class="student-file-button text-decoration-none"
+                       title="Unduh file"
+                       aria-label="Unduh @attachment.FileName">
+                        <i class="bi bi-download"></i>
+                    </a>
+
+                </div>
+            }
+
+        </div>
+    }
+
+    @if (Model.IsSubmitted)
+    {
+        <!-- SUBMITTED -->
+        <hr />
+
+        <div class="lampiran-card">
+
+            <div class="lampiran-header">
+                <div class="lampiran-header-title">
+                    <i class="bi bi-paperclip"></i> Lampiran Tugas
+                </div>
+            </div>
+
+            <div class="lampiran-body">
+                @foreach (var attachment in Model.SubmissionAttachments)
+                {
+                    <div class="student-file-item">
+
+                        <div class="student-file-name">
+                            <i class="bi @FileIconHelper.GetIcon(attachment.FileName)"></i>
+                            <span class="file-text">@attachment.FileName</span>
+                        </div>
+
+                        <a href="@attachment.FilePath"
+                           target="_blank"
+                           class="student-file-button text-decoration-none"
+                           title="Unduh file"
+                           aria-label="Unduh @attachment.FileName">
+                            <i class="bi bi-download"></i>
+                        </a>
+
+                    </div>
+                }
+            </div>
+
+        </div>
+        
+        var showScore = ViewData["ShowScore"] as bool? ?? false;
+
+        @if (showScore && Model.Score.HasValue)
+        {
+            <div class="alert alert-success mb-0 mt-3">
+                <i class="bi bi-award"></i> Nilai :
+                <strong>@Model.Score</strong>
+            </div>
+        }
+    }
+    else
+    {
+        <!-- NOT SUBMITTED -->
+        <hr />
+
+        <form asp-controller="Student"
+              asp-action="Submit"
+              asp-route-id="@Model.Id"
+              method="post"
+              enctype="multipart/form-data"
+              id="submitForm">
+
+            <div class="lampiran-card">
+
+                <div class="lampiran-header active">
+                    <div class="lampiran-header-title">
+                        <i class="bi bi-paperclip"></i> Lampiran Tugas
+                    </div>
+
+                    <button type="button"
+                            class="lampiran-add-btn"
+                            id="addAttachmentBtn">
+                        Tambah <i class="bi bi-plus-lg"></i>
+                    </button>
+
+                    <input type="file"
+                           id="attachmentInput"
+                           name="SubmissionFiles"
+                           multiple
+                           hidden
+                           accept=".pdf,.doc,.docx,.zip,.jpg,.jpeg,.png" />
+                </div>
+
+                <div class="lampiran-body">
+
+                    <div class="lampiran-empty" id="lampiranEmpty">
+                        <div class="kaomoji">(o^-^)o</div>
+                        <p>Belum ada apa-apa disini...</p>
+                        <p>Klik <strong>tambah +</strong> untuk memulai</p>
+                    </div>
+
+                    <div class="lampiran-file-list" id="lampiranFileList"></div>
+
+                </div>
+
+            </div>
+
+            <button type="submit"
+                    class="student-submit-button"
+                    id="submitAnswerBtn">
+                Kirim
+            </button>
+
+        </form>
+    }
+}
+
+</aside>
+
+<!-- Lampiran Tugas Attachment Picker -->
+<script>
+    (function () {
+        const addBtn = document.getElementById("addAttachmentBtn");
+        const input = document.getElementById("attachmentInput");
+        const emptyState = document.getElementById("lampiranEmpty");
+        const fileListEl = document.getElementById("lampiranFileList");
+
+        if (!addBtn || !input || !fileListEl) {
+            return;
+        }
+
+        if (typeof DataTransfer === "undefined") {
+            // Older browsers without DataTransfer support: fall back to
+            // a plain native file input so the form still works.
+            addBtn.style.display = "none";
+            input.hidden = false;
+            input.classList.add("form-control");
+            return;
+        }
+
+        let selectedFiles = new DataTransfer();
+
+        function fileIconClass(name) {
+            const ext = (name.split(".").pop() || "").toLowerCase();
+
+            if (ext === "pdf") return "bi-file-earmark-pdf";
+            if (ext === "doc" || ext === "docx") return "bi-file-earmark-word";
+            if (ext === "zip" || ext === "rar") return "bi-file-earmark-zip";
+            if (["jpg", "jpeg", "png", "gif"].includes(ext)) return "bi-file-earmark-image";
+
+            return "bi-file-earmark";
+        }
+
+        function render() {
+            fileListEl.innerHTML = "";
+
+            if (selectedFiles.files.length === 0) {
+                emptyState.style.display = "";
+                return;
+            }
+
+            emptyState.style.display = "none";
+
+            Array.from(selectedFiles.files).forEach((file, index) => {
+                const row = document.createElement("div");
+                row.className = "student-file-item";
+
+                const nameDiv = document.createElement("div");
+                nameDiv.className = "student-file-name";
+
+                const icon = document.createElement("i");
+                icon.className = "bi " + fileIconClass(file.name);
+
+                nameDiv.appendChild(icon);
+
+                const nameText = document.createElement("span");
+                nameText.className = "file-text";
+                nameText.appendChild(document.createTextNode(" " + file.name));
+                nameDiv.appendChild(nameText);
+
+                const removeBtn = document.createElement("button");
+                removeBtn.type = "button";
+                removeBtn.className = "lampiran-remove-btn";
+                removeBtn.dataset.index = String(index);
+                removeBtn.setAttribute("aria-label", "Hapus " + file.name);
+                removeBtn.innerHTML = "<i class=\"bi bi-trash\"></i>";
+
+                row.appendChild(nameDiv);
+                row.appendChild(removeBtn);
+                fileListEl.appendChild(row);
+            });
+        }
+
+        addBtn.addEventListener("click", function () {
+            input.click();
+        });
+
+        input.addEventListener("change", function () {
+            Array.from(input.files).forEach(file => {
+                selectedFiles.items.add(file);
+            });
+
+            input.files = selectedFiles.files;
+
+            render();
+        });
+
+        fileListEl.addEventListener("click", function (e) {
+            const btn = e.target.closest(".lampiran-remove-btn");
+
+            if (!btn) {
+                return;
+            }
+
+            const indexToRemove = parseInt(btn.dataset.index, 10);
+            const updated = new DataTransfer();
+
+            Array.from(selectedFiles.files).forEach((file, i) => {
+                if (i !== indexToRemove) {
+                    updated.items.add(file);
+                }
+            });
+
+            selectedFiles = updated;
+            input.files = selectedFiles.files;
+
+            render();
+        });
+    })();
+</script>

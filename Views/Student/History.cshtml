@@ -1,77 +1,94 @@
-﻿@model List<E_Learning.ViewModels.StudentHistoryViewModel>
+﻿@model E_Learning.ViewModels.StudentHistoryPageViewModel
 
 @{
     ViewData["Title"] = "Riwayat Tugas";
+    Layout = "_StudentLayout";
 }
 
-<h1>Riwayat Tugas</h1>
+<div class="student-page">
 
-<p>
-    Berikut adalah daftar tugas yang sudah Anda kumpulkan.
-</p>
+    <div class="student-shell">
 
-<hr />
+        @await Html.PartialAsync("_StudentSidebar", "Riwayat")
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        Belum ada tugas yang dikumpulkan.
-    </div>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Tugas</th>
-                <th>Mata Pelajaran</th>
-                <th>Dikumpulkan</th>
-                <th>Nilai</th>
-                <th></th>
-            </tr>
-        </thead>
+        <!-- MAIN PANEL -->
+        <main class="student-main">
 
-        <tbody>
-            @foreach (var item in Model)
+            <div class="student-page-title">
+                <div class="student-brand">
+                    <h1><b>Riwayat Pengumpulan Tugas</b></h1>
+                </div>
+            </div>
+
+            @if (!Model.Items.Any())
             {
-                <tr>
-                    <td>@item.Title</td>
-
-                    <td>@item.Subject</td>
-
-                    <td>
-                        @item.SubmittedAt.ToString("dd/MM/yyyy HH:mm")
-                    </td>
-
-                    <td>
-                        @if (item.IsGraded)
-                        {
-                            <strong>@item.Score</strong>
-                        }
-                        else
-                        {
-                            <span class="text-muted">
-                                Belum dinilai
-                            </span>
-                        }
-                    </td>
-
-                    <td>
-                        <a asp-controller="Student"
-                           asp-action="Detail"
-                           asp-route-id="@item.TaskId"
-                           class="btn btn-secondary btn-sm">
-                            Lihat
-                        </a>
-                    </td>
-                </tr>
+                <div class="student-details-empty">
+                    <p>Belum ada tugas yang dikumpulkan.</p>
+                </div>
             }
-        </tbody>
-    </table>
-}
+            else
+            {
+                <table class="student-task-table">
 
-<a asp-controller="Student"
-   asp-action="Index"
-   class="btn btn-primary">
-    Kembali ke Dashboard
-</a>
+                    <thead>
+                        <tr>
+                            <th>Tugas</th>
+                            <th>Mata Pelajaran</th>
+                            <th>Tenggat Waktu</th>
+                            <th>Nilai</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        @foreach (var item in Model.Items)
+                        {
+                            var isSelected = ViewBag.SelectedId == item.TaskId;
+
+                            <tr class="task-row @(isSelected ? "selected" : "")"
+                                data-url="@Url.Action(
+                                                                                "History",
+                                                                                "Student",
+                                                                                new { selectedId = item.TaskId })">
+
+                                <td>
+                                    @item.Title
+                                </td>
+
+                                <td>
+                                    @item.Subject
+                                </td>
+
+                                <td>
+                                    @item.SubmittedAt.ToString("dd/MM/yyyy, HH:mm")
+                                </td>
+
+                                <td>
+                                    @if (item.IsGraded)
+                                    {
+                                        <strong>@item.Score</strong>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Belum dinilai</span>
+                                    }
+                                </td>
+
+                            </tr>
+                        }
+
+                    </tbody>
+
+                </table>
+            }
+
+        </main>
+
+        @{
+            ViewData["ShowScore"] = false;
+        }
+        @await Html.PartialAsync("_TaskDetailPanel", Model.SelectedTask)
+
+    </div>
+
+</div>

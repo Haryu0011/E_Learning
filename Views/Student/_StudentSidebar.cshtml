@@ -1,0 +1,40 @@
+﻿@model string
+
+<!-- LEFT SIDE PANEL -->
+<aside class="student-sidebar">
+
+    <nav class="student-nav">
+
+        <a asp-controller="Student"
+           asp-action="Index"
+           class="student-nav-link @(Model == "Dashboard" ? "active" : "")">
+            <i class="bi bi-house-door"></i>
+            Dashboard
+        </a>
+
+        <a asp-controller="Student"
+           asp-action="History"
+           class="student-nav-link @(Model == "Riwayat" ? "active" : "")">
+            <i class="bi bi-clock-history"></i>
+            Riwayat
+        </a>
+
+    </nav>
+
+    <div class="student-logout">
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl="/Identity/Account/Login"
+              method="post">
+
+            <button type="submit">
+                <i class="bi bi-box-arrow-right"></i>
+                Keluar
+            </button>
+
+        </form>
+
+    </div>
+
+</aside>

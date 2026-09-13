@@ -251,8 +251,40 @@ namespace E_Learning.Controllers
             return View(model);
         }
 
+        // old
+        //[HttpGet]
+        //public async Task<IActionResult> History()
+        //{
+        //    var studentId = _userManager.GetUserId(User);
+
+        //    if (studentId == null)
+        //        return Challenge();
+
+        //    var submissions = await _context.Submissions
+        //        .Where(s => s.StudentId == studentId)
+        //        .Include(s => s.Task)
+        //        .Include(s => s.Grade)
+        //        .OrderByDescending(s => s.SubmittedAt)
+        //        .ToListAsync();
+
+        //    var model = submissions
+        //        .Select(s => new StudentHistoryViewModel
+        //        {
+        //            TaskId = s.TaskId,
+        //            Title = s.Task.Title,
+        //            Subject = s.Task.Subject,
+        //            SubmittedAt = s.SubmittedAt,
+        //            Score = s.Grade?.Score,
+        //            IsGraded = s.Grade != null
+        //        })
+        //        .ToList();
+
+        //    return View(model);
+        //}
+
+        //new 
         [HttpGet]
-        public async Task<IActionResult> History()
+        public async Task<IActionResult> History(int? selectedId)
         {
             var studentId = _userManager.GetUserId(User);
 
@@ -266,7 +298,7 @@ namespace E_Learning.Controllers
                 .OrderByDescending(s => s.SubmittedAt)
                 .ToListAsync();
 
-            var model = submissions
+            var items = submissions
                 .Select(s => new StudentHistoryViewModel
                 {
                     TaskId = s.TaskId,
@@ -277,6 +309,65 @@ namespace E_Learning.Controllers
                     IsGraded = s.Grade != null
                 })
                 .ToList();
+
+            StudentTaskDetailViewModel? selectedTask = null;
+
+            if (selectedId.HasValue)
+            {
+                var task = await _context.Tasks
+                    .Include(t => t.Attachments)
+                    .Include(t => t.Submissions)
+                        .ThenInclude(s => s.Attachments)
+                    .Include(t => t.Submissions)
+                        .ThenInclude(s => s.Grade)
+                    .FirstOrDefaultAsync(t => t.Id == selectedId.Value);
+
+                var submission = task?.Submissions
+                    .FirstOrDefault(s => s.StudentId == studentId);
+
+                // Riwayat only ever lists tasks the student has already
+                // submitted, so only build a detail view when that holds true.
+                if (task != null && submission != null)
+                {
+                    selectedTask = new StudentTaskDetailViewModel
+                    {
+                        Id = task.Id,
+                        Title = task.Title,
+                        Subject = task.Subject,
+                        Description = task.Description,
+                        DueDate = task.DueDate,
+
+                        Attachments = task.Attachments
+                            .Select(a => new TaskAttachmentViewModel
+                            {
+                                FileName = a.FileName,
+                                FilePath = a.FilePath
+                            })
+                            .ToList(),
+
+                        IsSubmitted = true,
+                        SubmittedAt = submission.SubmittedAt,
+
+                        SubmissionAttachments = submission.Attachments
+                            .Select(a => new SubmissionAttachmentViewModel
+                            {
+                                FileName = a.FileName,
+                                FilePath = a.FilePath
+                            })
+                            .ToList(),
+
+                        Score = submission.Grade?.Score
+                    };
+                }
+            }
+
+            ViewBag.SelectedId = selectedId;
+
+            var model = new StudentHistoryPageViewModel
+            {
+                Items = items,
+                SelectedTask = selectedTask
+            };
 
             return View(model);
         }

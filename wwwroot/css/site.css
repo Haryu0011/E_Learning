@@ -1,33 +1,33 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+    color: var(--bs-secondary-color);
+    text-align: end;
 }
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+    text-align: start;
 }
 
 /* =========================================================
@@ -189,6 +189,11 @@ body {
    STUDENT TASK PAGE
    ========================================================= */
 
+.student-body {
+    margin: 0;
+    min-height: 100vh;
+}
+
 .student-page {
     min-height: 100vh;
     background: #ffffff;
@@ -234,6 +239,12 @@ body {
     font-size: 0.95rem;
 }
 
+    .student-nav-link i {
+        font-size: 1.05rem;
+        width: 1.1rem;
+        text-align: center;
+    }
+
     .student-nav-link:hover {
         background: #f4f4f4;
         color: #222;
@@ -250,14 +261,23 @@ body {
 }
 
     .student-logout button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
         width: 100%;
         padding: 9px 12px;
         border: 0;
-        border-radius: 8px;
+        border-radius: 999px;
         background: #dc3545;
         color: #ffffff;
         font-weight: 600;
+        cursor: pointer;
     }
+
+        .student-logout button:hover {
+            background: #c62835;
+        }
 
 /* ---------- MAIN PANEL ---------- */
 
@@ -371,6 +391,180 @@ body {
     color: #16834c;
 }
 
+/* ---------- TASK HEADER (title + status badge) ---------- */
+
+.task-header {
+    margin-bottom: 18px;
+}
+
+.task-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 8px;
+}
+
+/* ---------- META ROWS (Mata Pelajaran / Tenggat Waktu) ---------- */
+
+.task-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+.meta-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.meta-icon {
+    font-size: 1.1rem;
+    color: #555;
+    margin-top: 2px;
+    width: 1.1rem;
+}
+
+.meta-label {
+    font-size: 0.8rem;
+    color: #808080;
+    margin-bottom: 2px;
+}
+
+.meta-value {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #222;
+}
+
+.task-divider {
+    border: none;
+    border-top: 1px solid #ececec;
+    margin: 18px 0;
+}
+
+/* ---------- PLAIN SECTIONS (Deskripsi / Instruksi dan Materi) ---------- */
+
+.task-section {
+    margin-bottom: 20px;
+}
+
+.section-heading {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-body {
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #444;
+}
+
+.file-link {
+    color: #147d92;
+    text-decoration: underline;
+}
+
+    .file-link:hover {
+        color: #0f5c6b;
+    }
+
+/* ---------- LAMPIRAN TUGAS CARD ---------- */
+
+.lampiran-card {
+    border: 1px solid #dbe7ee;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 16px;
+    background: #ffffff;
+}
+
+.lampiran-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: #f4f6f7;
+    border-bottom: 1px solid #ececec;
+}
+
+    .lampiran-header.active {
+        background: #dcebfb;
+        border-bottom-color: #c6ddf2;
+    }
+
+.lampiran-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    color: #1c3b57;
+    font-size: 0.95rem;
+}
+
+.lampiran-add-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    background: transparent;
+    color: #1c63c9;
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    padding: 4px 6px;
+}
+
+    .lampiran-add-btn:hover {
+        text-decoration: underline;
+    }
+
+.lampiran-body {
+    padding: 18px 16px;
+}
+
+.lampiran-empty {
+    text-align: center;
+    padding: 16px 10px;
+    color: #888;
+}
+
+    .lampiran-empty .kaomoji {
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 10px;
+    }
+
+    .lampiran-empty p {
+        margin: 4px 0;
+        font-size: 0.85rem;
+        font-style: italic;
+    }
+
+.lampiran-file-list .student-file-item:last-child {
+    margin-bottom: 0;
+}
+
+.lampiran-remove-btn {
+    border: none;
+    background: transparent;
+    color: #c0392b;
+    cursor: pointer;
+    padding: 4px 6px;
+    font-size: 1rem;
+}
+
+    .lampiran-remove-btn:hover {
+        color: #96281b;
+    }
+
 /* ---------- DETAILS PANEL ---------- */
 
 .student-details {
@@ -455,12 +649,24 @@ body {
 }
 
 .student-file-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     border: none;
     background: #177D8D;
     color: white;
     border-radius: 6px;
-    padding: 5px 12px;
-    font-size: .8rem;
+    padding: 6px 10px;
+    font-size: .85rem;
+    text-decoration: none;
+}
+
+    .student-file-button:hover {
+        background: #127684;
+    }
+
+.student-file-name i {
+    color: #177D8D;
 }
 
 .student-upload-area {
@@ -624,8 +830,14 @@ body {
     border-radius: 50%;
     background: #20e86d;
     color: #ffffff;
-    font-size: 2.6rem;
+    font-size: 2.4rem;
     font-weight: 700;
+}
+
+.submission-popup-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .submission-popup-title {

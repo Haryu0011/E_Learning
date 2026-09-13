@@ -60,25 +60,6 @@ namespace E_Learning.Areas.Identity.Pages.Account
                 Input.RememberMe,
                 lockoutOnFailure: false);
 
-            //if (result.Succeeded)
-            //{
-            //    _logger.LogInformation(
-            //        "User {Email} logged in.",
-            //        Input.Email);
-
-            //    var user = await _userManager.FindByEmailAsync(
-            //        Input.Email);
-
-            //    if (result.Succeeded)
-            //    {
-            //        _logger.LogInformation("User {Email} logged in.", Input.Email);
-
-            //        return LocalRedirect(ReturnUrl);
-            //    }
-
-            //    return LocalRedirect("/");
-            //}
-
             if (result.Succeeded)
             {
                 _logger.LogInformation("User {Email} logged in.", Input.Email);
