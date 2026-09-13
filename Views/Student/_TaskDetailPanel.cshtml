@@ -89,14 +89,14 @@ else
 
             @foreach (var attachment in Model.Attachments)
             {
+                var (baseName, ext) = FileIconHelper.SplitFileName(attachment.FileName);
+
                 <div class="student-file-item">
 
-                    <div class="student-file-name">
+                    <div class="student-file-name" title="@attachment.FileName">
                         <i class="bi bi-paperclip"></i>
-                        <a href="@attachment.FilePath"
-                           target="_blank"
-                           class="file-link file-text">
-                            @attachment.FileName
+                        <a href="@attachment.FilePath" target="_blank" class="file-link file-text">
+                            <span class="file-basename">@baseName</span><span class="file-ext">@ext</span>
                         </a>
                     </div>
 
@@ -130,11 +130,15 @@ else
             <div class="lampiran-body">
                 @foreach (var attachment in Model.SubmissionAttachments)
                 {
+                    var (baseName, ext) = FileIconHelper.SplitFileName(attachment.FileName);
+
                     <div class="student-file-item">
 
-                        <div class="student-file-name">
+                        <div class="student-file-name" title="@attachment.FileName">
                             <i class="bi @FileIconHelper.GetIcon(attachment.FileName)"></i>
-                            <span class="file-text">@attachment.FileName</span>
+                            <span class="file-text">
+                                <span class="file-basename">@baseName</span><span class="file-ext">@ext</span>
+                            </span>
                         </div>
 
                         <a href="@attachment.FilePath"
@@ -254,6 +258,16 @@ else
             return "bi-file-earmark";
         }
 
+        function splitFileName(name) {
+            const dotIndex = name.lastIndexOf(".");
+
+            if (dotIndex <= 0) {
+                return { baseName: name, ext: "" };
+            }
+
+            return { baseName: name.slice(0, dotIndex), ext: name.slice(dotIndex) };
+        }
+
         function render() {
             fileListEl.innerHTML = "";
 
@@ -270,15 +284,27 @@ else
 
                 const nameDiv = document.createElement("div");
                 nameDiv.className = "student-file-name";
+                nameDiv.title = file.name;
 
                 const icon = document.createElement("i");
                 icon.className = "bi " + fileIconClass(file.name);
-
                 nameDiv.appendChild(icon);
+
+                const { baseName, ext } = splitFileName(file.name);
 
                 const nameText = document.createElement("span");
                 nameText.className = "file-text";
-                nameText.appendChild(document.createTextNode(" " + file.name));
+
+                const baseSpan = document.createElement("span");
+                baseSpan.className = "file-basename";
+                baseSpan.textContent = baseName;
+
+                const extSpan = document.createElement("span");
+                extSpan.className = "file-ext";
+                extSpan.textContent = ext;
+
+                nameText.appendChild(baseSpan);
+                nameText.appendChild(extSpan);
                 nameDiv.appendChild(nameText);
 
                 const removeBtn = document.createElement("button");

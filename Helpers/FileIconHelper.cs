@@ -15,5 +15,16 @@
                 _ => "bi-file-earmark"
             };
         }
+
+        // Splits "Instruksi_Tugas_Membuat_Pantun.pdf" into
+        // ("Instruksi_Tugas_Membuat_Pantun", ".pdf") so the UI can
+        // truncate only the name and always keep the extension visible.
+        public static (string BaseName, string Extension) SplitFileName(string fileName)
+        {
+            var extension = System.IO.Path.GetExtension(fileName);
+            var baseName = System.IO.Path.GetFileNameWithoutExtension(fileName);
+
+            return (baseName, extension);
+        }
     }
 }
