@@ -38,6 +38,8 @@ namespace E_Learning.Controllers
                 .Include(t => t.Attachments)
                 .Include(t => t.Submissions)
                     .ThenInclude(s => s.Grade)
+                .Include(t => t.Submissions)
+                    .ThenInclude(s => s.Attachments)
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
 
@@ -89,7 +91,15 @@ namespace E_Learning.Controllers
 
                             IsGraded = s.Grade != null,
 
-                            Score = s.Grade?.Score
+                            Score = s.Grade?.Score,
+
+                            Attachments = s.Attachments
+                                .Select(a => new SubmissionAttachmentViewModel
+                                {
+                                    FileName = a.FileName,
+                                    FilePath = a.FilePath
+                                })
+                                .ToList()
                         })
                         .ToList()
                 }).ToList()

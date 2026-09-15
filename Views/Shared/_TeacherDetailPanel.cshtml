@@ -5,59 +5,43 @@
     @if (Model.SelectedTask == null)
     {
         <div class="teacher-details-empty">
-
             <p>
                 Pilih tugas untuk melihat detail.
             </p>
-
         </div>
     }
     else
     {
-        <!-- =================================================
-             TASK INFORMATION
-             ================================================= -->
+        <!-- =====================================================
+             TASK TITLE
+             ===================================================== -->
 
-        <div class="teacher-details-header">
+        <div class="teacher-details-title-block">
 
-            <div class="teacher-details-icon">
-                ◉
-            </div>
-
-            <div>
-
-                <div class="teacher-details-title">
-                    @Model.SelectedTask.Title
-                </div>
-
-                <div class="teacher-details-subject">
-                    @Model.SelectedTask.Subject
-                </div>
-
-            </div>
+            <h2 class="teacher-details-title">
+                @Model.SelectedTask.Title
+            </h2>
 
         </div>
 
 
-        <!-- =================================================
-             SUBJECT / DEADLINE
-             ================================================= -->
+        <!-- =====================================================
+             TASK META
+             ===================================================== -->
 
         <div class="teacher-details-meta">
 
             <div class="teacher-meta-item">
 
-                <span class="teacher-meta-icon">
-                    ◉
-                </span>
+                <i class="bi bi-book teacher-meta-icon"></i>
 
-                <div>
+                <div class="teacher-meta-content">
 
                     <span class="teacher-meta-label">
                         Mata Pelajaran
                     </span>
 
-                    <strong>
+                    <strong class="teacher-meta-value">
                         @Model.SelectedTask.Subject
                     </strong>
 
@@ -68,82 +52,102 @@
 
             <div class="teacher-meta-item">
 
-                <span class="teacher-meta-icon">
-                    ◉
-                </span>
+                <i class="bi bi-calendar3 teacher-meta-icon"></i>
 
-                <div>
+                <div class="teacher-meta-content">
 
                     <span class="teacher-meta-label">
                         Tenggat Waktu
                     </span>
 
-                    <strong>
-                        @Model.SelectedTask.DueDate.ToString(
-                            "dd/MM/yyyy, HH:mm")
+                    <strong class="teacher-meta-value">
+                        @Model.SelectedTask.DueDate.ToString("dd/MM/yyyy, HH:mm")
                     </strong>
 
                 </div>
 
             </div>
 
+
+            @if (Model.SelectedSubmission != null)
+            {
+                <div class="teacher-meta-item">
+
+                    <i class="bi bi-clock teacher-meta-icon"></i>
+
+                    <div class="teacher-meta-content">
+
+                        <span class="teacher-meta-label">
+                            Dikumpulkan pada
+                        </span>
+
+                        <strong class="teacher-meta-value">
+                            @Model.SelectedSubmission.SubmittedAt.ToString("dd/MM/yyyy, HH:mm")
+                        </strong>
+
+                    </div>
+
+                </div>
+            }
+
         </div>
 
 
-        <!-- =================================================
+        <div class="teacher-details-divider"></div>
+
+
+        <!-- =====================================================
              DESCRIPTION
-             ================================================= -->
+             ===================================================== -->
 
-        <div class="teacher-details-section">
+        <section class="teacher-details-section">
 
-            <div class="teacher-details-section-title">
-                ◉ Deskripsi
-            </div>
+            <h3 class="teacher-details-section-title">
+                Deskripsi
+            </h3>
 
             <div class="teacher-details-description">
                 @Model.SelectedTask.Description
             </div>
 
-        </div>
+        </section>
 
 
-        <!-- =================================================
-             MATERIAL / ATTACHMENTS
-             ================================================= -->
+        <!-- =====================================================
+             TASK MATERIAL
+             ===================================================== -->
         @if (Model.SelectedTask.Attachments.Any())
         {
-            <div class="teacher-details-section">
+            <section class="teacher-details-section">
 
-                <div class="teacher-details-section-title">
-                    ◉ Instruksi dan Materi
-                </div>
+                <h3 class="teacher-details-section-title">
+                    Instruksi dan Materi
+                </h3>
 
-                <div class="teacher-file-list">
+                <div class="teacher-material-list">
 
                     @foreach (var attachment
                         in Model.SelectedTask.Attachments)
                     {
-                        <div class="teacher-file-item">
+                        <div class="teacher-material-item">
 
-                            <div class="teacher-file-name"
-                                 title="@attachment.FileName">
-
-                                <span class="teacher-file-icon">
-                                    ◉
-                                </span>
-
-                                <span>
-                                    @attachment.FileName
-                                </span>
-
-                            </div>
+                            <i class="bi bi-paperclip teacher-material-icon"></i>
 
                             <a href="@attachment.FilePath"
                                target="_blank"
-                               class="teacher-file-action"
-                               title="Buka file">
+                               class="teacher-material-name"
+                               title="@attachment.FileName">
 
-                                ◉
+                                @attachment.FileName
+
+                            </a>
+
+                            <a href="@attachment.FilePath"
+                               class="teacher-material-action"
+                               download
+                               title="Download">
+
+                                <i class="bi bi-download"></i>
 
                             </a>
 
@@ -152,121 +156,175 @@
 
                 </div>
 
-            </div>
+            </section>
         }
 
 
-        <!-- =================================================
+        <!-- =====================================================
              SELECTED SUBMISSION
-             ================================================= -->
+             ===================================================== -->
         @if (Model.SelectedSubmission == null)
         {
             <div class="teacher-details-select-hint">
 
-                <span class="teacher-details-select-icon">
-                    ◉
-                </span>
+                <i class="bi bi-info-circle"></i>
 
                 <p>
                     Pilih pengumpulan siswa pada tabel
                     untuk melihat detail dan memberikan nilai.
-                </p>
+                </p>    
 
             </div>
         }
         else
         {
-            <div class="teacher-details-section">
+            <!-- =================================================
+                 SUBMISSION CARD
+                 ================================================= -->
+            
+            <hr />
 
-                <div class="teacher-details-section-title">
-                    ◉ Pengumpulan Siswa
+            <section class="teacher-submission-card">
+
+                <div class="teacher-submission-card-header">
+
+                    <div class="teacher-submission-card-title">
+
+                        <i class="bi bi-file-earmark-text"></i>
+
+                        <span>
+                            Lampiran Tugas
+                        </span>
+
+                    </div>
+
                 </div>
 
-                <div class="teacher-submission-info">
 
-                    <div class="teacher-submission-student">
-                        @Model.SelectedSubmission.StudentEmail
-                    </div>
+                <div class="teacher-submission-card-body">
+
+                    @if (Model.SelectedSubmission.Attachments.Any())
+                    {
+                        <div class="teacher-material-list teacher-submission-files">
+
+                            @foreach (
+                                var attachment
+                                in Model.SelectedSubmission.Attachments)
+                            {
+                                <div class="teacher-material-files">
+
+                                    <i class="bi bi-file-earmark teacher-material-icon"></i>
+
+                                    <a href="@attachment.FilePath"
+                                       target="_blank"
+                                       class="teacher-material-name"
+                                       title="@attachment.FileName">
+
+                                        @attachment.FileName
+
+                                    </a>
+
+                                    <a href="@attachment.FilePath"
+                                       class="teacher-material-action"
+                                       download
+                                       title="Download">
+
+                                        <i class="bi bi-download"></i>
+
+                                    </a>
+
+                                </div>
+                            }
+
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="teacher-no-submission-files">
+                            Tidak ada lampiran jawaban.
+                        </div>
+                    }
+
+                </div>
+
+            </section>
+
+
+            @* <!-- =================================================
+                 LATE / ON TIME
+                 ================================================= -->
+            @if (Model.SelectedSubmission.IsLate)
+            {
+                <div class="teacher-submission-status teacher-submission-status-late">
+
+                    <i class="bi bi-exclamation-circle"></i>
 
                     <div>
-                        Dikumpulkan:
-                        <strong>
-                            @Model.SelectedSubmission
-                            .SubmittedAt
-                            .ToString("dd/MM/yyyy, HH:mm")
-                        </strong>
-                    </div>
-
-                </div>
-
-
-                @if (Model.SelectedSubmission.IsLate)
-                {
-                    <div class="teacher-late-box">
 
                         <strong>
                             TERLAMBAT
                         </strong>
 
                         <span>
-                            Pengumpulan dilakukan setelah
-                            batas waktu.
+                            Pengumpulan dilakukan setelah batas waktu.
                         </span>
 
                     </div>
-                }
-                else
-                {
-                    <div class="teacher-ontime-box">
+
+                </div>
+            }
+            else
+            {
+                <div class="teacher-submission-status teacher-submission-status-ontime">
+
+                    <i class="bi bi-check-circle"></i>
+
+                    <div>
 
                         <strong>
                             TEPAT WAKTU
                         </strong>
 
                         <span>
-                            Pengumpulan dilakukan sebelum
-                            batas waktu.
+                            Pengumpulan dilakukan sebelum batas waktu.
                         </span>
 
                     </div>
-                }
+
+                </div>
+            } *@
 
 
-                @if (Model.SelectedSubmission.IsGraded)
-                {
-                    <div class="teacher-grade-box">
+            <!-- =================================================
+                 GRADE
+                 ================================================= -->
 
-                        <div>
-                            Nilai
-                        </div>
+            <div class="teacher-grade-section">
 
-                        <strong>
-                            @Model.SelectedSubmission.Score
-                        </strong>
-
-                    </div>
-
-                    <div class="teacher-grade-locked">
-                        Nilai sudah diberikan dan tidak dapat diubah.
-                    </div>
-                }
-                else
+                @if (!Model.SelectedSubmission.IsGraded)
                 {
                     <form asp-controller="Teacher"
                           asp-action="Grade"
                           asp-route-id="@Model.SelectedSubmission.SubmissionId"
                           method="post">
 
-                        <div class="teacher-grade-input-label">
-                            Nilai
-                        </div>
+                        @Html.AntiForgeryToken()
 
-                        <input name="Score"
-                               type="number"
-                               min="0"
-                               max="100"
-                               class="teacher-grade-input"
-                               placeholder="Masukkan nilai" />
+                        <div class="teacher-grade-input-row">
+
+                            <strong>
+                                Nilai:
+                            </strong>
+
+                            <input name="Score"
+                                   type="number"
+                                   min="0"
+                                   max="100"
+                                   required
+                                   class="teacher-grade-input"
+                                   placeholder="Klik disini untuk memberi nilai" />
+
+                        </div>
 
                         <button type="submit"
                                 class="teacher-grade-button">
@@ -279,6 +337,7 @@
                 }
 
             </div>
+
         }
 
     }

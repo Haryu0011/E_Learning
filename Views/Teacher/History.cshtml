@@ -265,8 +265,7 @@
                             </span>
 
                             <strong>
-                                @Model.SelectedTask.DueDate.ToString(
-                                    "dd/MM/yyyy, HH:mm")
+                                @Model.SelectedTask.DueDate.ToString("dd/MM/yyyy, HH:mm")
                             </strong>
 
                         </div>
@@ -375,48 +374,11 @@
                                 Dikumpulkan:
 
                                 <strong>
-                                    @Model.SelectedSubmission
-                                    .SubmittedAt
-                                    .ToString(
-                                    "dd/MM/yyyy, HH:mm")
+                                    @Model.SelectedSubmission.SubmittedAt.ToString("dd/MM/yyyy, HH:mm")
                                 </strong>
                             </div>
 
                         </div>
-
-
-                        <!-- LATE / ON TIME -->
-                        @if (Model.SelectedSubmission.IsLate)
-                        {
-                            <div class="teacher-late-box">
-
-                                <strong>
-                                    TERLAMBAT
-                                </strong>
-
-                                <span>
-                                    Pengumpulan dilakukan setelah
-                                    batas waktu.
-                                </span>
-
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="teacher-ontime-box">
-
-                                <strong>
-                                    TEPAT WAKTU
-                                </strong>
-
-                                <span>
-                                    Pengumpulan dilakukan sebelum
-                                    batas waktu.
-                                </span>
-
-                            </div>
-                        }
-
 
                         <!-- SUBMITTED FILES -->
                         @if (Model.SelectedSubmission.Attachments.Any())

@@ -123,14 +123,13 @@ body {
     top: 50%;
     right: 12px;
     transform: translateY(-50%);
-    min-width: 34px;
+    width: 34px;
     height: 34px;
-    padding: 0 4px;
+    padding: 0;
     border: 0;
     background: transparent;
+    font-size: 1.1rem;
     color: #111;
-    font-size: 0.85rem;
-    font-weight: 600;
     cursor: pointer;
 }
 
@@ -706,6 +705,16 @@ body {
         margin-top: 15px;
     }
 
+.student-submit-button {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    background: #178796;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+}
 
 /* ---------- RESPONSIVE ---------- */
 
@@ -779,10 +788,10 @@ body {
     font-size: 0.88rem;
 }
 
-    .student-late-warning strong {
-        display: block;
-        margin-bottom: 3px;
-    }
+.student-late-warning strong {
+    display: block;
+    margin-bottom: 3px;
+}
 
 .student-upload-box {
     margin-bottom: 12px;
@@ -849,6 +858,12 @@ body {
     font-weight: 700;
 }
 
+.submission-popup-file {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .submission-popup-title {
     font-size: 1.25rem;
     font-weight: 700;
@@ -875,9 +890,6 @@ body {
 }
 
 .submission-popup-file {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     padding: 7px 0;
     font-size: 0.9rem;
     color: #555;
@@ -1077,17 +1089,21 @@ body {
     padding: 6px 0;
     color: #222;
     text-decoration: none;
-    font-size: 1rem;
-    font-weight: 700;
+    font-size: 24px;
+    font-weight: 400;
 }
 
-    .teacher-task-title:hover {
-        color: #117f8b;
-    }
+.teacher-task-title:hover {
+    color: #117f8b;
+    text-decoration: underline;
+    text-decoration-thickness: 2px; 
+    text-underline-offset: 4px; 
+    text-decoration-color: #117f8b; 
+}
 
-    .teacher-task-title.selected {
-        color: #117f8b;
-    }
+.teacher-task-title.selected {
+    color: #117f8b;
+}
 
 .teacher-task-toggle {
     width: 34px;
@@ -1135,6 +1151,7 @@ body {
 }
 
     .teacher-submission-table thead th {
+        font-size: 18px;
         padding: 10px 12px;
         background: #f7f7f7;
         border-bottom: 1px solid #dedede;
@@ -1168,30 +1185,29 @@ body {
 }
 
 .teacher-status {
+    font-size: 16px;
     display: inline-block;
     padding: 4px 8px;
     border-radius: 999px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .teacher-status-graded {
-    background: #ddf7e8;
-    color: #16834c;
+    font-size: 16px;
 }
 
 .teacher-status-ungraded {
-    background: #eeeeee;
-    color: #555;
+    font-size: 16px;
 }
 
 .teacher-status-late {
-    background: #ffe3e3;
+    font-size: 16px;
     color: #c62828;
 }
 
 .teacher-status-on-time {
-    background: #ddf7e8;
+    font-size: 16px;
     color: #16834c;
 }
 
@@ -1201,283 +1217,405 @@ body {
 
 
 /* =========================================================
-   DETAILS PANEL
+   TEACHER DETAILS PANEL
    ========================================================= */
 
 .teacher-details {
     min-width: 0;
     border-left: 1px solid #e5e5e5;
     background: #ffffff;
-    padding: 26px 22px;
+    padding: 26px 20px 28px;
     overflow-y: auto;
 }
 
-.teacher-details-empty {
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    color: #999;
-}
 
-.teacher-details-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
+/* =========================================================
+   TASK TITLE
+   ========================================================= */
 
-.teacher-details-icon {
-    width: 42px;
-    height: 42px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
-    border-radius: 50%;
-    background: #dff4f5;
-    color: #177f8d;
-    font-size: 1rem;
+.teacher-details-title-block {
+    margin-bottom: 24px;
 }
 
 .teacher-details-title {
-    margin-bottom: 2px;
-    color: #222;
-    font-size: 1.2rem;
+    margin: 0;
+    color: #111111;
+    font-size: 1.65rem;
+    line-height: 1.15;
     font-weight: 700;
+    overflow-wrap: anywhere;
 }
 
-.teacher-details-subject {
-    color: #777;
-    font-size: 0.85rem;
-}
+
+/* =========================================================
+   TASK META
+   ========================================================= */
 
 .teacher-details-meta {
-    padding-bottom: 18px;
-    border-bottom: 1px solid #ececec;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
 .teacher-meta-item {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 12px;
 }
 
-    .teacher-meta-item:last-child {
-        margin-bottom: 0;
-    }
-
 .teacher-meta-icon {
-    width: 20px;
-    flex: 0 0 auto;
-    color: #177f8d;
+    width: 26px;
+    flex: 0 0 26px;
+    margin-top: 1px;
+    color: #111111;
+    font-size: 1.5rem;
+    line-height: 1;
     text-align: center;
 }
 
-.teacher-meta-item > div {
+.teacher-meta-content {
+    min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: 3px;
 }
 
 .teacher-meta-label {
-    color: #777;
-    font-size: 0.76rem;
+    color: #666666;
+    font-size: 0.82rem;
 }
 
-.teacher-meta-item strong {
-    color: #333;
-    font-size: 0.85rem;
+.teacher-meta-value {
+    color: #111111;
+    font-size: 0.84rem;
+    font-weight: 700;
 }
+
+.teacher-details-divider {
+    height: 1px;
+    margin: 20px 0;
+    background: #dedede;
+}
+
+
+/* =========================================================
+   DETAIL SECTIONS
+   ========================================================= */
 
 .teacher-details-section {
     margin-top: 20px;
 }
 
 .teacher-details-section-title {
-    margin-bottom: 8px;
-    color: #222;
-    font-size: 0.9rem;
+    margin: 0 0 10px;
+    color: #111111;
+    font-size: 0.96rem;
     font-weight: 700;
 }
 
 .teacher-details-description {
-    color: #444;
-    font-size: 0.86rem;
-    line-height: 1.5;
-    word-break: break-word;
+    color: #303030;
+    font-size: 0.84rem;
+    line-height: 1.45;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
 }
 
 
 /* =========================================================
-   FILES
+   TASK MATERIAL
    ========================================================= */
 
-.teacher-file-list {
+.teacher-material-list {
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 8px;
 }
 
-.teacher-file-item {
+.teacher-material-item {
     display: flex;
     align-items: center;
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     padding: 9px 10px;
-    border: 1px solid #e1e1e1;
     border-radius: 8px;
-    background: #fafafa;
+    border: 1px solid #999;
+    background: #ffffff;
 }
 
-.teacher-file-name {
+.teacher-material-files {
     display: flex;
     align-items: center;
-    gap: 7px;
+    width: 100%;
     min-width: 0;
-    flex: 1;
+    box-sizing: border-box;
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: #ffffff;
 }
 
-    .teacher-file-name > span:last-child {
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        color: #444;
-        font-size: 0.82rem;
+.teacher-material-icon {
+    flex: 0 0 auto;
+    margin-right: 8px;
+    color: #111111;
+    font-size: 1.2rem;
+}
+
+.teacher-material-name {
+    display: block;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    color: #3929ff;
+    font-size: 0.88rem;
+    text-decoration: underline;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+    .teacher-material-name:hover {
+        color: #2719d8;
     }
 
-.teacher-file-icon {
-    flex: 0 0 auto;
-    color: #177f8d;
-}
-
-.teacher-file-action {
-    width: 28px;
-    flex: 0 0 28px;
+.teacher-material-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    flex: 0 0 30px;
     margin-left: 8px;
-    text-align: center;
-    color: #177f8d;
+    color: #118496;
+    font-size: 1.25rem;
     text-decoration: none;
 }
 
-    .teacher-file-action:hover {
-        color: #0e6571;
+    .teacher-material-action:hover {
+        color: #0a6674;
     }
 
 
 /* =========================================================
-   SELECTED SUBMISSION
+   SELECT SUBMISSION HINT
    ========================================================= */
 
 .teacher-details-select-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
     margin-top: 22px;
-    padding: 13px;
-    border: 1px dashed #d2d2d2;
-    border-radius: 9px;
-    color: #777;
-    font-size: 0.82rem;
+    padding: 12px;
+    border: 1px dashed #cfcfcf;
+    border-radius: 8px;
+    background: #ffffff;
+    color: #7a7a7a;
+    font-size: 0.79rem;
+    line-height: 1.4;
 }
 
-.teacher-details-select-icon {
-    color: #177f8d;
+    .teacher-details-select-hint > i {
+        flex: 0 0 auto;
+        margin-top: 1px;
+        color: #168897;
+    }
+
+    .teacher-details-select-hint p {
+        margin: 0;
+    }
+
+
+/* =========================================================
+   SUBMISSION CARD
+   ========================================================= */
+
+.teacher-submission-card {
+    margin-top: 24px;
+    overflow: hidden;
+    border: 1px solid #aaaaaa;
+    border-radius: 10px;
+    background: #ffffff;
 }
 
-.teacher-details-select-hint p {
-    margin: 6px 0 0;
+.teacher-submission-card-header {
+    padding: 13px 14px;
+    border-bottom: 1px solid #bdbdbd;
+    background: #f3f3f3;
 }
 
-.teacher-submission-info {
-    color: #666;
-    font-size: 0.82rem;
-}
-
-.teacher-submission-student {
-    margin-bottom: 6px;
-    color: #222;
+.teacher-submission-card-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: #111111;
+    font-size: 0.96rem;
     font-weight: 700;
 }
 
-.teacher-late-box,
-.teacher-ontime-box {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    margin-top: 12px;
-    padding: 10px 12px;
-    border-radius: 8px;
+    .teacher-submission-card-title i {
+        font-size: 1.15rem;
+    }
+
+.teacher-submission-card-body {
+    padding: 14px;
+}
+
+.teacher-submission-files {
+    gap: 9px;
+}
+
+.teacher-no-submission-files {
+    color: #777777;
     font-size: 0.8rem;
 }
 
-.teacher-late-box {
-    border: 1px solid #f1b7b7;
-    background: #fff0f0;
+
+/* =========================================================
+   SUBMISSION STATUS
+   ========================================================= */
+
+.teacher-submission-status {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 18px;
+    padding: 11px 12px;
+    border-radius: 8px;
+    font-size: 0.79rem;
+}
+
+    .teacher-submission-status > i {
+        flex: 0 0 auto;
+        margin-top: 1px;
+        font-size: 1rem;
+    }
+
+    .teacher-submission-status div {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    .teacher-submission-status strong {
+        font-size: 0.76rem;
+    }
+
+    .teacher-submission-status span {
+        line-height: 1.35;
+    }
+
+.teacher-submission-status-late {
+    border: 1px solid #efbbbb;
+    background: #fff1f1;
     color: #b42323;
 }
 
-.teacher-ontime-box {
+.teacher-submission-status-ontime {
     border: 1px solid #b8dfc8;
     background: #eefaf2;
     color: #227347;
 }
 
-.teacher-grade-box {
+
+/* =========================================================
+   GRADING
+   ========================================================= */
+
+.teacher-grade-section {
+    margin-top: 20px;
+}
+
+.teacher-grade-display {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 14px;
     padding: 11px 12px;
+    border: 1px solid #d7d2ff;
     border-radius: 8px;
-    background: #e4f6eb;
-    color: #176f4a;
+    background: #ffffff;
 }
 
-    .teacher-grade-box strong {
-        font-size: 1.1rem;
+.teacher-grade-label {
+    color: #111111;
+    font-size: 0.96rem;
+    font-weight: 700;
+}
+
+.teacher-grade-value {
+    color: #111111;
+    font-size: 1rem;
+}
+
+.teacher-grade-input-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 10px;
+    border: 1px solid #4b36ff;
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+    .teacher-grade-input-row strong {
+        flex: 0 0 auto;
+        color: #111111;
+        font-size: 0.9rem;
     }
-
-.teacher-grade-locked {
-    margin-top: 7px;
-    color: #777;
-    font-size: 0.76rem;
-}
-
-.teacher-grade-input-label {
-    margin-top: 16px;
-    margin-bottom: 6px;
-    color: #333;
-    font-size: 0.82rem;
-    font-weight: 600;
-}
 
 .teacher-grade-input {
     width: 100%;
-    padding: 9px 10px;
-    border: 1px solid #d6d6d6;
-    border-radius: 7px;
-    outline: none;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #222222;
+    font-size: 0.86rem;
+    font-style: italic;
 }
 
-    .teacher-grade-input:focus {
-        border-color: #177f8d;
+    .teacher-grade-input::placeholder {
+        color: #333333;
+        opacity: 1;
     }
 
 .teacher-grade-button {
     width: 100%;
-    margin-top: 10px;
-    padding: 10px 14px;
+    margin-top: 16px;
+    padding: 14px 14px;
     border: 0;
-    border-radius: 8px;
-    background: #178796;
+    border-radius: 10px;
+    background: #148897;
     color: #ffffff;
+    font-size: 1rem;
     font-weight: 700;
     cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
     .teacher-grade-button:hover {
-        background: #127684;
+        background: #117887;
+        transform: translateY(-1px);
     }
+
+    .teacher-grade-button:active {
+        transform: translateY(0);
+    }
+
+
+/* =========================================================
+   EMPTY DETAIL PANEL
+   ========================================================= */
+
+.teacher-details-empty {
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #999999;
+    text-align: center;
+}
 
 
 /* =========================================================
@@ -1666,12 +1804,12 @@ body {
     padding: 28px 30px;
 }
 
-    .teacher-create-main > .teacher-main-header,
-    .teacher-create-main > .teacher-create-card {
-        width: min(760px, 100%);
-        margin-left: auto;
-        margin-right: auto;
-    }
+.teacher-create-main > .teacher-main-header,
+.teacher-create-main > .teacher-create-card {
+    width: min(760px, 100%);
+    margin-left: auto;
+    margin-right: auto;
+}
 
 .teacher-form-group {
     margin-bottom: 22px;

@@ -39,6 +39,8 @@
         public bool IsGraded { get; set; }
 
         public int? Score { get; set; }
+
+        public List<SubmissionAttachmentViewModel> Attachments { get; set; } = new();
     }
 
     public class TeacherDashboardAttachmentViewModel
