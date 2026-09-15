@@ -43,6 +43,7 @@
                 </div>
 
                 <div class="login-field">
+
                     <label asp-for="Input.Email">
                         Nama Pengguna
                     </label>
@@ -55,9 +56,11 @@
                     <span asp-validation-for="Input.Email"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <div class="login-field">
+
                     <label asp-for="Input.Password">
                         Kata Sandi
                     </label>
@@ -73,10 +76,8 @@
                         <button type="button"
                                 class="password-toggle"
                                 id="passwordToggle"
-                                aria-label="Tampilkan password">
-
-                            <span id="passwordIcon">◉</span>
-
+                                aria-label="Tampilkan atau sembunyikan password">
+                            Tampilkan
                         </button>
 
                     </div>
@@ -84,6 +85,7 @@
                     <span asp-validation-for="Input.Password"
                           class="text-danger">
                     </span>
+
                 </div>
 
                 <button type="submit"
@@ -102,29 +104,34 @@
     <partial name="_ValidationScriptsPartial" />
 
     <script>
-        const passwordInput =
-            document.getElementById("passwordInput");
+            const passwordInput =
+                document.getElementById("passwordInput");
 
-        const passwordToggle =
-            document.getElementById("passwordToggle");
+            const passwordToggle =
+                document.getElementById("passwordToggle");
 
-        const passwordIcon =
-            document.getElementById("passwordIcon");
+            passwordToggle.addEventListener("click", function() {
 
-        passwordToggle.addEventListener("click", function () {
+                if (passwordInput.type === "password") {
 
-            if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    passwordToggle.textContent = "Sembunyikan";
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Sembunyikan password"
+                    );
 
-                passwordInput.type = "text";
-                passwordIcon.textContent = "◉";
+                } else {
 
-            } else {
+                    passwordInput.type = "password";
+                    passwordToggle.textContent = "Tampilkan";
+                    passwordToggle.setAttribute(
+                        "aria-label",
+                        "Tampilkan password"
+                    );
+                }
 
-                passwordInput.type = "password";
-                passwordIcon.textContent = "◉";
-            }
-
-        });
+            });
     </script>
 
 </body>

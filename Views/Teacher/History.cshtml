@@ -1,149 +1,174 @@
-﻿@model List<E_Learning.ViewModels.TeacherHistoryViewModel>
+﻿@model E_Learning.ViewModels.TeacherHistoryPageViewModel
 
 @{
-    ViewData["Title"] = "Riwayat Tugas";
+    ViewData["Title"] = "Riwayat Penilaian Tugas";
+    Layout = "_TeacherLayout";
 }
 
-<h1>Riwayat Tugas</h1>
+<div class="teacher-page">
 
-<p>
-    Daftar tugas dan seluruh pengumpulan siswa.
-</p>
+    <div class="teacher-shell">
 
-<hr />
+        @await Html.PartialAsync(
+            "_TeacherSidebar",
+            "History")
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        Belum ada tugas.
-    </div>
-}
-else
-{
-    <div class="accordion" id="teacherHistoryAccordion">
+        <!-- =====================================================
+             MAIN PANEL
+             ===================================================== -->
 
-        @foreach (var task in Model)
-        {
-            var headingId = $"heading-{task.TaskId}";
-            var collapseId = $"collapse-{task.TaskId}";
+        <main class="teacher-main teacher-history-main">
 
-            <div class="accordion-item mb-2">
+            <div class="teacher-main-header">
 
-                <h2 class="accordion-header"
-                    id="@headingId">
+                <h1>Riwayat Penilaian Tugas</h1>
+                <p> Berikut adalah rangkuman nilai untuk setiap murid</p>
 
-                    <button class="accordion-button collapsed"
-                            type="button"
-                            data-bs-toggle="collapse"
-                            data-bs-target="#@collapseId"
-                            aria-expanded="false"
-                            aria-controls="@collapseId">
+            </div>
 
-                        <div>
-                            <strong>@task.TaskTitle</strong>
-                            <div class="small text-muted">
-                                @task.Subject
-                                ·
-                                Deadline:
-                                @task.DueDate.ToString("dd/MM/yyyy HH:mm")
-                                ·
-                                @task.Submissions.Count submission(s)
+            @if (!Model.Students.Any())
+            {
+                <div class="teacher-empty-state">
+                    <p>
+                        Belum ada data siswa.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="teacher-history-list">
+
+                    @foreach (var student in Model.Students)
+                    {
+                        var contentId =
+                            $"history-student-{student.StudentId}";
+
+                        var isSelectedStudent =
+                            Model.SelectedSubmission != null &&
+                            student.Submissions.Any(
+                                s => s.SubmissionId ==
+                                     Model.SelectedSubmission.SubmissionId);
+
+                        <section class="teacher-history-card">
+
+                            <!-- STUDENT HEADER -->
+
+                            <div class="teacher-history-header">
+
+                                <div class="teacher-history-student-name">
+                                    @student.StudentEmail
+                                </div>
+
+                                <button type="button"
+                                        class="teacher-history-toggle"
+                                        data-target="@contentId"
+                                        aria-expanded="true"
+                                        aria-controls="@contentId">
+
+                                    <span class="teacher-history-chevron">
+                                        ⌃
+                                    </span>
+
+                                </button>
+
                             </div>
-                        </div>
 
-                    </button>
-                </h2>
 
-                <div id="@collapseId"
-                     class="accordion-collapse collapse"
-                     aria-labelledby="@headingId"
-                     data-bs-parent="#teacherHistoryAccordion">
+                            <!-- STUDENT TABLE -->
 
-                    <div class="accordion-body">
+                            <div id="@contentId"
+                                 class="teacher-history-content">
 
-                        @if (!task.Submissions.Any())
-                        {
-                            <div class="alert alert-secondary">
-                                Belum ada siswa yang mengumpulkan tugas ini.
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="table-responsive">
-
-                                <table class="table table-bordered table-hover align-middle">
+                                <table class="teacher-history-table">
 
                                     <thead>
                                         <tr>
-                                            <th>Siswa</th>
-                                            <th>Deadline</th>
-                                            <th>Dikumpulkan</th>
-                                            <th>Status</th>
+                                            <th>Tugas</th>
+                                            <th>Status Pengumpulan</th>
                                             <th>Nilai</th>
-                                            <th></th>
                                         </tr>
                                     </thead>
 
                                     <tbody>
 
-                                        @foreach (var submission in task.Submissions)
+                                        @if (!student.Submissions.Any())
                                         {
                                             <tr>
+                                                <td colspan="3"
+                                                    class="teacher-history-empty">
 
-                                                <td>
-                                                    @submission.StudentEmail
+                                                    Belum ada pengumpulan tugas.
+
                                                 </td>
-
-                                                <td>
-                                                    @task.DueDate.ToString(
-                                                        "dd/MM/yyyy HH:mm")
-                                                </td>
-
-                                                <td>
-                                                    @submission.SubmittedAt.ToString(
-                                                        "dd/MM/yyyy HH:mm")
-                                                </td>
-
-                                                <td>
-                                                    @if (submission.IsLate)
-                                                    {
-                                                        <span class="badge bg-danger fs-6">
-                                                            TERLAMBAT
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge bg-success">
-                                                            TEPAT WAKTU
-                                                        </span>
-                                                    }
-                                                </td>
-
-                                                <td>
-                                                    @if (submission.IsGraded)
-                                                    {
-                                                        <strong>
-                                                            @submission.Score
-                                                        </strong>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="text-muted">
-                                                            Belum dinilai
-                                                        </span>
-                                                    }
-                                                </td>
-
-                                                <td>
-                                                    <a asp-controller="Teacher"
-                                                       asp-action="Grade"
-                                                       asp-route-id="@submission.SubmissionId"
-                                                       class="btn btn-secondary btn-sm">
-                                                        Lihat
-                                                    </a>
-                                                </td>
-
                                             </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (
+                                                var submission
+                                                in student.Submissions)
+                                            {
+                                                var selected =
+                                                    Model.SelectedSubmission
+                                                    ?.SubmissionId
+                                                    == submission.SubmissionId;
+
+                                                var rowUrl =
+                                                    Url.Action(
+                                                        "History",
+                                                        "Teacher",
+                                                        new
+                                                        {
+                                                            selectedTaskId =
+                                                                submission.TaskId,
+
+                                                            selectedSubmissionId =
+                                                                submission.SubmissionId
+                                                        });
+
+                                                <tr class="teacher-history-row @(selected ? "selected" : "")"
+                                                    data-url="@rowUrl">
+
+                                                    <td>
+                                                        @submission.TaskTitle
+                                                    </td>
+
+                                                    <td>
+
+                                                        @if (submission.IsLate)
+                                                        {
+                                                            <span class="teacher-status teacher-status-late">
+                                                                Telat
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="teacher-status teacher-status-on-time">
+                                                                Tepat Waktu
+                                                            </span>
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        @if (submission.IsGraded)
+                                                        {
+                                                            <strong>
+                                                                @submission.Score
+                                                            </strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="teacher-score-empty">
+                                                                -
+                                                            </span>
+                                                        }
+
+                                                    </td>
+
+                                                </tr>
+                                            }
                                         }
 
                                     </tbody>
@@ -151,20 +176,430 @@ else
                                 </table>
 
                             </div>
+
+                        </section>
+                    }
+
+                </div>
+            }
+
+        </main>
+
+
+        <!-- =====================================================
+             RIGHT DETAILS PANEL
+             ===================================================== -->
+
+        <aside class="teacher-details teacher-history-details">
+
+            @if (Model.SelectedTask == null)
+            {
+                <div class="teacher-details-empty">
+
+                    <p>
+                        Pilih pengumpulan siswa untuk melihat detail.
+                    </p>
+
+                </div>
+            }
+            else
+            {
+                <!-- TASK HEADER -->
+
+                <div class="teacher-details-header">
+
+                    <div class="teacher-details-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <div class="teacher-details-title">
+                            @Model.SelectedTask.Title
+                        </div>
+
+                        <div class="teacher-details-subject">
+                            @Model.SelectedTask.Subject
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- TASK META -->
+
+                <div class="teacher-details-meta">
+
+                    <div class="teacher-meta-item">
+
+                        <span class="teacher-meta-icon">
+                            ◉
+                        </span>
+
+                        <div>
+
+                            <span class="teacher-meta-label">
+                                Mata Pelajaran
+                            </span>
+
+                            <strong>
+                                @Model.SelectedTask.Subject
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="teacher-meta-item">
+
+                        <span class="teacher-meta-icon">
+                            ◉
+                        </span>
+
+                        <div>
+
+                            <span class="teacher-meta-label">
+                                Tenggat Waktu
+                            </span>
+
+                            <strong>
+                                @Model.SelectedTask.DueDate.ToString(
+                                    "dd/MM/yyyy, HH:mm")
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- DESCRIPTION -->
+
+                <div class="teacher-details-section">
+
+                    <div class="teacher-details-section-title">
+                        ◉ Deskripsi
+                    </div>
+
+                    <div class="teacher-details-description">
+                        @Model.SelectedTask.Description
+                    </div>
+
+                </div>
+
+
+                <!-- MATERIAL -->
+                @if (Model.SelectedTask.Attachments.Any())
+                {
+                    <div class="teacher-details-section">
+
+                        <div class="teacher-details-section-title">
+                            ◉ Instruksi dan Materi
+                        </div>
+
+                        <div class="teacher-file-list">
+
+                            @foreach (
+                                var attachment
+                                in Model.SelectedTask.Attachments)
+                            {
+                                <div class="teacher-file-item">
+
+                                    <div class="teacher-file-name"
+                                         title="@attachment.FileName">
+
+                                        <span class="teacher-file-icon">
+                                            ◉
+                                        </span>
+
+                                        <span>
+                                            @attachment.FileName
+                                        </span>
+
+                                    </div>
+
+                                    <a href="@attachment.FilePath"
+                                       target="_blank"
+                                       class="teacher-file-action"
+                                       title="Buka file">
+
+                                        ◉
+
+                                    </a>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </div>
+                }
+
+
+                <!-- SUBMISSION -->
+                @if (Model.SelectedSubmission == null)
+                {
+                    <div class="teacher-details-select-hint">
+
+                        <span class="teacher-details-select-icon">
+                            ◉
+                        </span>
+
+                        <p>
+                            Pilih salah satu tugas siswa
+                            pada tabel untuk melihat
+                            pengumpulan dan penilaiannya.
+                        </p>
+
+                    </div>
+                }
+                else
+                {
+                    <div class="teacher-details-section">
+
+                        <div class="teacher-details-section-title">
+                            ◉ Pengumpulan Siswa
+                        </div>
+
+
+                        <div class="teacher-submission-info">
+
+                            <div class="teacher-submission-student">
+                                @Model.SelectedSubmission.StudentEmail
+                            </div>
+
+                            <div>
+                                Dikumpulkan:
+
+                                <strong>
+                                    @Model.SelectedSubmission
+                                    .SubmittedAt
+                                    .ToString(
+                                    "dd/MM/yyyy, HH:mm")
+                                </strong>
+                            </div>
+
+                        </div>
+
+
+                        <!-- LATE / ON TIME -->
+                        @if (Model.SelectedSubmission.IsLate)
+                        {
+                            <div class="teacher-late-box">
+
+                                <strong>
+                                    TERLAMBAT
+                                </strong>
+
+                                <span>
+                                    Pengumpulan dilakukan setelah
+                                    batas waktu.
+                                </span>
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="teacher-ontime-box">
+
+                                <strong>
+                                    TEPAT WAKTU
+                                </strong>
+
+                                <span>
+                                    Pengumpulan dilakukan sebelum
+                                    batas waktu.
+                                </span>
+
+                            </div>
+                        }
+
+
+                        <!-- SUBMITTED FILES -->
+                        @if (Model.SelectedSubmission.Attachments.Any())
+                        {
+                            <div class="teacher-details-section">
+
+                                <div class="teacher-details-section-title">
+                                    ◉ Lampiran Jawaban
+                                </div>
+
+                                <div class="teacher-file-list">
+
+                                    @foreach (
+                                        var attachment
+                                        in Model.SelectedSubmission.Attachments)
+                                    {
+                                        <div class="teacher-file-item">
+
+                                            <div class="teacher-file-name"
+                                                 title="@attachment.FileName">
+
+                                                <span class="teacher-file-icon">
+                                                    ◉
+                                                </span>
+
+                                                <span>
+                                                    @attachment.FileName
+                                                </span>
+
+                                            </div>
+
+                                            <a href="@attachment.FilePath"
+                                               target="_blank"
+                                               class="teacher-file-action"
+                                               title="Buka file">
+
+                                                ◉
+
+                                            </a>
+
+                                        </div>
+                                    }
+
+                                </div>
+
+                            </div>
+                        }
+
+
+                        <!-- GRADE -->
+                        @if (Model.SelectedSubmission.IsGraded)
+                        {
+                            <div class="teacher-grade-box">
+
+                                <div>
+                                    Nilai
+                                </div>
+
+                                <strong>
+                                    @Model.SelectedSubmission.Score
+                                </strong>
+
+                            </div>
+
+                            <div class="teacher-grade-locked">
+                                Nilai sudah diberikan dan tidak dapat
+                                diubah.
+                            </div>
+                        }
+                        else
+                        {
+                            <form asp-controller="Teacher"
+                                  asp-action="Grade"
+                                  asp-route-id="@Model.SelectedSubmission.SubmissionId"
+                                  method="post">
+
+                                @Html.AntiForgeryToken()
+
+                                <div class="teacher-grade-input-label">
+                                    Nilai
+                                </div>
+
+                                <input name="Score"
+                                       type="number"
+                                       min="0"
+                                       max="100"
+                                       class="teacher-grade-input"
+                                       placeholder="Masukkan nilai"
+                                       required />
+
+                                <button type="submit"
+                                        class="teacher-grade-button">
+
+                                    Beri Nilai
+
+                                </button>
+
+                            </form>
                         }
 
                     </div>
-                </div>
+                }
 
-            </div>
-        }
+            }
+
+        </aside>
+
     </div>
-}
 
-<div class="mt-3">
-    <a asp-controller="Teacher"
-       asp-action="Index"
-       class="btn btn-primary">
-        Kembali ke Dashboard
-    </a>
 </div>
+
+
+<script>
+
+    // =========================================================
+    // History row selection
+    // =========================================================
+
+    document
+        .querySelectorAll(".teacher-history-row")
+        .forEach(row => {
+
+            row.addEventListener("click", function() {
+
+                const url = this.dataset.url;
+
+                if (url) {
+                    window.location.href = url;
+                }
+
+            });
+
+        });
+
+
+    // =========================================================
+    // Independent student accordion
+    // =========================================================
+
+    document
+        .querySelectorAll(".teacher-history-toggle")
+        .forEach(button => {
+
+            button.addEventListener("click", function() {
+
+                const targetId =
+                    this.dataset.target;
+
+                const content =
+                    document.getElementById(targetId);
+
+                if (!content) {
+                    return;
+                }
+
+                const isOpen =
+                    this.getAttribute("aria-expanded") === "true";
+
+                if (isOpen) {
+                    content.classList.add("collapsed");
+
+                    this.setAttribute(
+                        "aria-expanded",
+                        "false");
+
+                    this.querySelector(
+                        ".teacher-history-chevron")
+                        .textContent = "⌄";
+                }
+                else {
+                    content.classList.remove("collapsed");
+
+                    this.setAttribute(
+                        "aria-expanded",
+                        "true");
+
+                    this.querySelector(
+                        ".teacher-history-chevron")
+                        .textContent = "⌃";
+                }
+
+            });
+
+        });
+
+</script>

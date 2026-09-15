@@ -1,67 +1,367 @@
 ﻿@model E_Learning.ViewModels.CreateTaskViewModel
 
 @{
-    ViewData["Title"] = "Buat Tugas";
+    ViewData["Title"] = "Buat Tugas Baru";
+    Layout = "_TeacherLayout";
 }
 
-<h1>Buat Tugas</h1>
+<div class="teacher-page">
 
-<hr />
+    <div class="teacher-shell">
 
-<div class="row">
-    <div class="col-md-8">
-        <form asp-action="Create" method="post" enctype="multipart/form-data">
+        @await Html.PartialAsync(
+            "_TeacherSidebar",
+            "Create")
 
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <!-- =====================================================
+             MAIN PANEL
+             ===================================================== -->
 
-            <div class="mb-3">
-                <label asp-for="Title" class="form-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+        <main class="teacher-main teacher-create-main">
+
+            <div class="teacher-main-header">
+
+                <h1>Buat Tugas Baru</h1>
+
+                <hr />
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Subject" class="form-label"></label>
-                <input asp-for="Subject" class="form-control" />
-                <span asp-validation-for="Subject" class="text-danger"></span>
+            <div class="teacher-create-card">
+
+                <form asp-controller="Teacher"
+                      asp-action="Create"
+                      method="post"
+                      enctype="multipart/form-data">
+
+                    @Html.AntiForgeryToken()
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="teacher-create-validation">
+                    </div>
+
+
+                    <!-- JUDUL -->
+
+                    <div class="teacher-form-group">
+
+                        <label asp-for="Title"
+                               class="teacher-form-label">
+                            Judul Tugas
+                        </label>
+
+                        <input asp-for="Title"
+                               class="teacher-form-input"
+                               placeholder="Contoh: Puisi Alam Indonesia" />
+
+                        <span asp-validation-for="Title"
+                              class="teacher-form-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- MATA PELAJARAN -->
+
+                    <div class="teacher-form-group">
+
+                        <label asp-for="Subject"
+                               class="teacher-form-label">
+                            Mata Pelajaran
+                        </label>
+
+                        <input asp-for="Subject"
+                               class="teacher-form-input"
+                               placeholder="Contoh: Bahasa Indonesia" />
+
+                        <span asp-validation-for="Subject"
+                              class="teacher-form-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- DESKRIPSI -->
+
+                    <div class="teacher-form-group">
+
+                        <label asp-for="Description"
+                               class="teacher-form-label">
+                            Deskripsi
+                        </label>
+
+                        <textarea asp-for="Description"
+                                  class="teacher-form-textarea"
+                                  rows="7"
+                                  placeholder="Tuliskan deskripsi tugas..."></textarea>
+
+                        <span asp-validation-for="Description"
+                              class="teacher-form-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- DEADLINE -->
+
+                    <div class="teacher-form-group">
+
+                        <label asp-for="DueDate"
+                               class="teacher-form-label">
+                            Batas Pengumpulan
+                        </label>
+
+                        <div class="teacher-form-input-icon">
+
+                            <span>
+                                ◉
+                            </span>
+
+                            <input asp-for="DueDate"
+                                   type="datetime-local"
+                                   class="teacher-form-input teacher-form-input-with-icon" />
+
+                        </div>
+
+                        <span asp-validation-for="DueDate"
+                              class="teacher-form-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- ATTACHMENTS -->
+
+                    <div class="teacher-form-group">
+
+                        <label asp-for="Attachments"
+                               class="teacher-form-label">
+                            Lampiran Materi
+                        </label>
+
+                        <div class="teacher-upload-box">
+
+                            <div class="teacher-upload-icon">
+                                ◉
+                            </div>
+
+                            <div class="teacher-upload-title">
+                                Pilih lampiran tugas
+                            </div>
+
+                            <div class="teacher-upload-description">
+                                File akan tersedia untuk siswa
+                                pada halaman detail tugas.
+                            </div>
+
+                            <input asp-for="Attachments"
+                                   type="file"
+                                   multiple
+                                   class="teacher-form-file" />
+
+                        </div>
+
+                        <span asp-validation-for="Attachments"
+                              class="teacher-form-error">
+                        </span>
+
+                    </div>
+
+
+                    <!-- ACTIONS -->
+
+                    <div class="teacher-form-actions">
+
+                        <a asp-controller="Teacher"
+                           asp-action="Index"
+                           class="teacher-cancel-button">
+                            Batal
+                        </a>
+
+                        <button type="submit"
+                                class="teacher-create-button">
+                            Buat Tugas
+                        </button>
+
+                    </div>
+
+                </form>
+
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Description" class="form-label"></label>
-                <textarea asp-for="Description"
-                          class="form-control"
-                          rows="5"></textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
+        </main>
+
+
+        <!-- =====================================================
+             RIGHT PANEL
+             ===================================================== -->
+
+        <aside class="teacher-details teacher-create-details">
+
+            <div class="teacher-details-header">
+
+                <div class="teacher-details-icon">
+                    ◉
+                </div>
+
+                <div>
+
+                    <div class="teacher-details-title">
+                        Tugas Baru
+                    </div>
+
+                    <div class="teacher-details-subject">
+                        Informasi pembuatan tugas
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="mb-3">
-                <label asp-for="DueDate" class="form-label"></label>
-                <input asp-for="DueDate"
-                       type="datetime-local"
-                       class="form-control" />
-                <span asp-validation-for="DueDate" class="text-danger"></span>
+            <div class="teacher-create-info">
+
+                <div class="teacher-create-info-item">
+
+                    <div class="teacher-create-info-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Judul & Mata Pelajaran
+                        </strong>
+
+                        <p>
+                            Berikan identitas tugas yang
+                            mudah dikenali siswa.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="teacher-create-info-item">
+
+                    <div class="teacher-create-info-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Deskripsi
+                        </strong>
+
+                        <p>
+                            Jelaskan tugas dan ketentuan
+                            yang perlu dikerjakan siswa.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="teacher-create-info-item">
+
+                    <div class="teacher-create-info-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Batas Pengumpulan
+                        </strong>
+
+                        <p>
+                            Tentukan tanggal dan waktu
+                            terakhir pengumpulan.
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <div class="teacher-create-info-item">
+
+                    <div class="teacher-create-info-icon">
+                        ◉
+                    </div>
+
+                    <div>
+
+                        <strong>
+                            Lampiran
+                        </strong>
+
+                        <p>
+                            Tambahkan materi atau dokumen
+                            yang diperlukan siswa.
+                        </p>
+
+                    </div>
+
+                </div>
+
             </div>
 
-            <div class="mb-3">
-                <label asp-for="Attachments" class="form-label"></label>
-                <input asp-for="Attachments"
-                       type="file"
-                       class="form-control"
-                       multiple />
-                <span asp-validation-for="Attachments" class="text-danger"></span>
-            </div>
+        </aside>
 
-            <button type="submit" class="btn btn-primary">
-                Simpan Tugas
-            </button>
-
-            <a asp-action="Index" class="btn btn-secondary">
-                Batal
-            </a>
-        </form>
     </div>
+
 </div>
 
+
+<!-- =========================================================
+     SNACKBAR
+     ========================================================= -->
+@if (TempData["Success"] != null)
+{
+    <div class="teacher-snackbar teacher-snackbar-success"
+         id="teacherSnackbar">
+
+        @TempData["Success"]
+
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="teacher-snackbar teacher-snackbar-error"
+         id="teacherSnackbar">
+
+        @TempData["Error"]
+
+    </div>
+}
+
+
 @section Scripts {
+
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+
+        const snackbar =
+            document.getElementById("teacherSnackbar");
+
+        if (snackbar) {
+
+            setTimeout(() => {
+
+                snackbar.classList.add(
+                    "teacher-snackbar-hide");
+
+                setTimeout(() => {
+                    snackbar.remove();
+                }, 250);
+
+            }, 3000);
+
+        }
+
+    </script>
 }

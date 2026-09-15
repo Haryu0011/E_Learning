@@ -1,0 +1,58 @@
+﻿@model string
+
+<div class="teacher-sidebar">
+
+    <div class="teacher-sidebar-brand">
+        E-Learning
+    </div>
+
+    <nav class="teacher-sidebar-nav">
+
+        <a asp-controller="Teacher"
+           asp-action="Index"
+           class="teacher-nav-link @(Model == "Dashboard" ? "active" : "")">
+
+            <span class="teacher-nav-icon">◉</span>
+
+            <span>Dashboard</span>
+
+        </a>
+
+        <a asp-controller="Teacher"
+           asp-action="History"
+           class="teacher-nav-link @(Model == "History" ? "active" : "")">
+
+            <span class="teacher-nav-icon">◉</span>
+
+            <span>Riwayat</span>
+
+        </a>
+
+        <a asp-controller="Teacher"
+           asp-action="Create"
+           class="teacher-nav-link @(Model == "Create" ? "active" : "")">
+
+            <span class="teacher-nav-icon">◉</span>
+
+            <span>Buat Tugas Baru</span>
+
+        </a>
+
+    </nav>
+
+    <div class="teacher-logout">
+
+        <form asp-area="Identity"
+              asp-page="/Account/Logout"
+              asp-route-returnUrl="/Identity/Account/Login"
+              method="post">
+
+            <button type="submit">
+                Keluar
+            </button>
+
+        </form>
+
+    </div>
+
+</div>

@@ -24,7 +24,9 @@ namespace E_Learning.Controllers
             _environment = environment;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(
+            int? selectedTaskId,
+            int? selectedSubmissionId)
         {
             var teacherId = _userManager.GetUserId(User);
 
@@ -33,20 +35,81 @@ namespace E_Learning.Controllers
 
             var tasks = await _context.Tasks
                 .Where(t => t.TeacherId == teacherId)
+                .Include(t => t.Attachments)
                 .Include(t => t.Submissions)
                     .ThenInclude(s => s.Grade)
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
 
-            var model = tasks.Select(task => new TeacherTaskViewModel
+            var studentIds = tasks
+                .SelectMany(t => t.Submissions)
+                .Select(s => s.StudentId)
+                .Distinct()
+                .ToList();
+
+            var students = await _userManager.Users
+                .Where(u => studentIds.Contains(u.Id))
+                .ToDictionaryAsync(
+                    u => u.Id,
+                    u => u.Email ?? u.UserName ?? "Unknown");
+
+            var model = new TeacherDashboardViewModel
             {
-                Id = task.Id,
-                Title = task.Title,
-                Subject = task.Subject,
-                DueDate = task.DueDate,
-                SubmissionCount = task.Submissions.Count,
-                GradedCount = task.Submissions.Count(s => s.Grade != null)
-            }).ToList();
+                Tasks = tasks.Select(task => new TeacherDashboardTaskViewModel
+                {
+                    Id = task.Id,
+                    Title = task.Title,
+                    Subject = task.Subject,
+                    Description = task.Description,
+                    DueDate = task.DueDate,
+
+                    Attachments = task.Attachments
+                        .Select(a => new TeacherDashboardAttachmentViewModel
+                        {
+                            FileName = a.FileName,
+                            FilePath = a.FilePath
+                        })
+                        .ToList(),
+
+                    Submissions = task.Submissions
+                        .OrderByDescending(s => s.SubmittedAt)
+                        .Select(s => new TeacherDashboardSubmissionViewModel
+                        {
+                            SubmissionId = s.Id,
+
+                            StudentEmail = students.TryGetValue(
+                                s.StudentId,
+                                out var email)
+                                    ? email
+                                    : "Unknown",
+
+                            SubmittedAt = s.SubmittedAt,
+
+                            IsLate = s.SubmittedAt > task.DueDate,
+
+                            IsGraded = s.Grade != null,
+
+                            Score = s.Grade?.Score
+                        })
+                        .ToList()
+                }).ToList()
+            };
+
+            // Show the first task by default.
+            model.SelectedTask = selectedTaskId.HasValue
+                ? model.Tasks.FirstOrDefault(t => t.Id == selectedTaskId.Value)
+                : model.Tasks.FirstOrDefault();
+
+            // If a submission was selected, make sure it belongs to
+            // the currently selected task.
+            if (model.SelectedTask != null &&
+                selectedSubmissionId.HasValue)
+            {
+                model.SelectedSubmission =
+                    model.SelectedTask.Submissions
+                        .FirstOrDefault(
+                            s => s.SubmissionId == selectedSubmissionId.Value);
+            }
 
             return View(model);
         }
@@ -63,6 +126,9 @@ namespace E_Learning.Controllers
         {
             if (!ModelState.IsValid)
             {
+                TempData["Error"] =
+                "Tugas gagal dibuat, harap hubungi admin jika masalah berlanjut";
+
                 return View(model);
             }
 
@@ -124,6 +190,7 @@ namespace E_Learning.Controllers
 
                 await _context.SaveChangesAsync();
             }
+            TempData["Success"] = "Tugas berhasil dibuat";
 
             return RedirectToAction(nameof(Index));
         }
@@ -284,11 +351,17 @@ namespace E_Learning.Controllers
             // A grade cannot be edited once it exists.
             if (submission.Grade != null)
             {
-                TempData["Error"] = "Tugas ini sudah dinilai dan tidak dapat diubah.";
+                TempData["Error"] =
+                    "Tugas ini sudah dinilai dan tidak dapat diubah.";
 
                 return RedirectToAction(
-                    nameof(Grade),
-                    new { id });
+                    nameof(Index),
+                    new
+                    {
+                        selectedTaskId = submission.TaskId,
+                        selectedSubmissionId = submission.Id
+                    }
+                );
             }
 
             var grade = new E_Learning.Models.Grade
@@ -305,12 +378,19 @@ namespace E_Learning.Controllers
             TempData["Success"] = "Nilai berhasil disimpan.";
 
             return RedirectToAction(
-                nameof(Submissions),
-                new { id = submission.TaskId });
+                nameof(Index),
+                new
+                {
+                    selectedTaskId = submission.TaskId,
+                    selectedSubmissionId = submission.Id
+                }
+            );
         }
 
         [HttpGet]
-        public async Task<IActionResult> History()
+        public async Task<IActionResult> History(
+        int? selectedTaskId,
+        int? selectedSubmissionId)
         {
             var teacherId = _userManager.GetUserId(User);
 
@@ -319,52 +399,161 @@ namespace E_Learning.Controllers
 
             var tasks = await _context.Tasks
                 .Where(t => t.TeacherId == teacherId)
+                .Include(t => t.Attachments)
                 .Include(t => t.Submissions)
                     .ThenInclude(s => s.Grade)
+                .Include(t => t.Submissions)
+                    .ThenInclude(s => s.Attachments)
                 .OrderByDescending(t => t.CreatedAt)
                 .ToListAsync();
 
-            var studentIds = tasks
-                .SelectMany(t => t.Submissions)
-                .Select(s => s.StudentId)
-                .Distinct()
+            var muridUsers = await _userManager.GetUsersInRoleAsync("Murid");
+
+            var taskLookup = tasks.ToDictionary(t => t.Id);
+
+            var students = muridUsers
+                .OrderBy(u => u.Email ?? u.UserName)
+                .Select(student =>
+                {
+                    var submissions = tasks
+                        .SelectMany(task => task.Submissions)
+                        .Where(submission =>
+                            submission.StudentId == student.Id)
+                        .OrderByDescending(submission => submission.SubmittedAt)
+                        .Select(submission =>
+                        {
+                            var task = taskLookup[submission.TaskId];
+
+                            return new TeacherHistoryStudentSubmissionViewModel
+                            {
+                                SubmissionId = submission.Id,
+                                TaskId = task.Id,
+                                TaskTitle = task.Title,
+                                Subject = task.Subject,
+                                SubmittedAt = submission.SubmittedAt,
+                                IsLate = submission.SubmittedAt > task.DueDate,
+                                IsGraded = submission.Grade != null,
+                                Score = submission.Grade?.Score
+                            };
+                        })
+                        .ToList();
+
+                    return new TeacherHistoryStudentViewModel
+                    {
+                        StudentId = student.Id,
+                        StudentEmail =
+                            student.Email ??
+                            student.UserName ??
+                            "Unknown",
+                        Submissions = submissions
+                    };
+                })
                 .ToList();
 
-            var students = await _userManager.Users
-                .Where(u => studentIds.Contains(u.Id))
-                .ToDictionaryAsync(
-                    u => u.Id,
-                    u => u.Email ?? u.UserName ?? "Unknown");
-
-            var model = tasks.Select(task => new TeacherHistoryViewModel
+            var model = new TeacherHistoryPageViewModel
             {
-                TaskId = task.Id,
-                TaskTitle = task.Title,
-                Subject = task.Subject,
-                DueDate = task.DueDate,
+                Students = students
+            };
 
-                Submissions = task.Submissions
-                    .OrderByDescending(s => s.SubmittedAt)
-                    .Select(s => new TeacherHistorySubmissionViewModel
+            // ---------------------------------------------------------
+            // Selected task
+            // ---------------------------------------------------------
+
+            if (selectedTaskId.HasValue)
+            {
+                var selectedTask = tasks
+                    .FirstOrDefault(t => t.Id == selectedTaskId.Value);
+
+                if (selectedTask != null)
+                {
+                    model.SelectedTask = new TeacherHistoryTaskDetailViewModel
                     {
-                        SubmissionId = s.Id,
+                        TaskId = selectedTask.Id,
+                        Title = selectedTask.Title,
+                        Subject = selectedTask.Subject,
+                        Description = selectedTask.Description,
+                        DueDate = selectedTask.DueDate,
 
-                        StudentEmail = students.TryGetValue(
-                            s.StudentId,
-                            out var email)
-                                ? email
-                                : "Unknown",
+                        Attachments = selectedTask.Attachments
+                            .Select(a => new TeacherHistoryFileViewModel
+                            {
+                                FileName = a.FileName,
+                                FilePath = a.FilePath
+                            })
+                            .ToList()
+                    };
+                }
+            }
 
-                        SubmittedAt = s.SubmittedAt,
+            // ---------------------------------------------------------
+            // Selected submission
+            // ---------------------------------------------------------
 
-                        IsLate = s.SubmittedAt > task.DueDate,
+            if (selectedSubmissionId.HasValue)
+            {
+                var submission = tasks
+                    .SelectMany(t => t.Submissions)
+                    .FirstOrDefault(s =>
+                        s.Id == selectedSubmissionId.Value);
 
-                        IsGraded = s.Grade != null,
+                if (submission != null)
+                {
+                    var task = taskLookup[submission.TaskId];
 
-                        Score = s.Grade?.Score
-                    })
-                    .ToList()
-            }).ToList();
+                    var student = await _userManager.FindByIdAsync(
+                        submission.StudentId);
+
+                    model.SelectedSubmission =
+                        new TeacherHistorySubmissionDetailViewModel
+                        {
+                            SubmissionId = submission.Id,
+
+                            StudentEmail =
+                                student?.Email ??
+                                student?.UserName ??
+                                "Unknown",
+
+                            SubmittedAt = submission.SubmittedAt,
+
+                            IsLate =
+                                submission.SubmittedAt > task.DueDate,
+
+                            IsGraded =
+                                submission.Grade != null,
+
+                            Score =
+                                submission.Grade?.Score,
+
+                            Attachments = submission.Attachments
+                                .Select(a => new TeacherHistoryFileViewModel
+                                {
+                                    FileName = a.FileName,
+                                    FilePath = a.FilePath
+                                })
+                                .ToList()
+                        };
+
+                    // Make sure the right panel also knows which task
+                    // belongs to the selected submission.
+                    model.SelectedTask =
+                        new TeacherHistoryTaskDetailViewModel
+                        {
+                            TaskId = task.Id,
+                            Title = task.Title,
+                            Subject = task.Subject,
+                            Description = task.Description,
+                            DueDate = task.DueDate,
+
+                            Attachments = task.Attachments
+                                .Select(a => new TeacherHistoryFileViewModel
+                                {
+                                    FileName = a.FileName,
+                                    FilePath = a.FilePath
+                                })
+                                .ToList()
+                        };
+                }
+            }
 
             return View(model);
         }

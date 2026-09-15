@@ -1,77 +1,296 @@
-﻿@model List<E_Learning.ViewModels.TeacherTaskViewModel>
+﻿@model E_Learning.ViewModels.TeacherDashboardViewModel
 
 @{
-    ViewData["Title"] = "Teacher Dashboard";
+    ViewData["Title"] = "Dashboard Guru";
+    Layout = "_TeacherLayout";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h1>Teacher Dashboard</h1>
-        <p>Welcome, @User.Identity?.Name</p>
+<div class="teacher-page">
+
+    <div class="teacher-shell">
+
+        @await Html.PartialAsync(
+            "_TeacherSidebar",
+            "Dashboard")
+
+        <!-- =====================================================
+             MAIN PANEL
+             ===================================================== -->
+
+        <main class="teacher-main">
+
+            <div class="teacher-main-header">
+
+                <div>
+                    <h1>E-Learning Sekolah ABC</h1>
+
+                    <p>
+                        Berikut adalah semua tugas yang tersedia
+                    </p>
+                </div>
+
+                <div>
+                    <br />
+                    <hr />
+                    <h1 style="font-size: 32px;">Halaman ini sedang dalam konstruksi</h1>
+                </div>
+
+            </div>
+
+            @if (!Model.Tasks.Any())
+            {
+                <div class="teacher-empty-state">
+                    <p>
+                        Belum ada tugas yang dibuat.
+                    </p>
+                </div>
+            }
+            else
+            {
+                <div class="teacher-task-list">
+
+                    @foreach (var task in Model.Tasks)
+                    {
+                        var taskIsSelected =
+                            Model.SelectedTask?.Id == task.Id;
+
+                        var tableId =
+                            $"teacher-task-{task.Id}";
+
+                        <section class="teacher-task-card">
+
+                            <!-- TASK HEADER -->
+
+                            <div class="teacher-task-header">
+
+                                <a asp-controller="Teacher"
+                                   asp-action="Index"
+                                   asp-route-selectedTaskId="@task.Id"
+                                   class="teacher-task-title @(taskIsSelected ? "selected" : "")">
+
+                                    <span>
+                                        @task.Title
+                                    </span>
+
+                                </a>
+
+                                <button type="button"
+                                        class="teacher-task-toggle"
+                                        data-target="@tableId"
+                                        aria-expanded="true"
+                                        aria-controls="@tableId">
+
+                                    <span class="teacher-task-chevron">
+                                        ⌃
+                                    </span>
+
+                                </button>
+
+                            </div>
+
+                            <!-- SUBMISSION TABLE -->
+
+                            <div id="@tableId"
+                                 class="teacher-task-content">
+
+                                <table class="teacher-submission-table">
+
+                                    <thead>
+                                        <tr>
+                                            <th>Tugas</th>
+                                            <th>Status Penilaian</th>
+                                            <th>Status Pengumpulan</th>
+                                            <th>Nilai</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+
+                                        @if (!task.Submissions.Any())
+                                        {
+                                            <tr>
+                                                <td colspan="4"
+                                                    class="teacher-no-submissions">
+
+                                                    Belum ada tugas untuk dinilai saat ini
+
+                                                </td>
+                                            </tr>
+                                        }
+                                        else
+                                        {
+                                            @foreach (var submission in task.Submissions)
+                                            {
+                                                var isSelected =
+                                                    Model.SelectedSubmission?.SubmissionId
+                                                    == submission.SubmissionId;
+
+                                                <tr class="teacher-submission-row @(isSelected ? "selected" : "")"
+                                                    data-url="@Url.Action(
+                                                        "Index",
+                                                        "Teacher",
+                                                        new
+                                                        {
+                                                            selectedTaskId = task.Id,
+                                                            selectedSubmissionId = submission.SubmissionId
+                                                        })">
+
+                                                    <td>
+                                                        @submission.StudentEmail
+                                                    </td>
+
+                                                    <td>
+
+                                                        @if (submission.IsGraded)
+                                                        {
+                                                            <span class="teacher-status teacher-status-graded">
+                                                                Sudah dinilai
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="teacher-status teacher-status-ungraded">
+                                                                Belum dinilai
+                                                            </span>
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        @if (submission.IsLate)
+                                                        {
+                                                            <span class="teacher-status teacher-status-late">
+                                                                Telat
+                                                            </span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="teacher-status teacher-status-on-time">
+                                                                Tepat Waktu
+                                                            </span>
+                                                        }
+
+                                                    </td>
+
+                                                    <td>
+
+                                                        @if (submission.IsGraded)
+                                                        {
+                                                            <strong>
+                                                                @submission.Score
+                                                            </strong>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="teacher-score-empty">
+                                                                -
+                                                            </span>
+                                                        }
+
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        }
+
+                                    </tbody>
+
+                                </table>
+
+                            </div>
+
+                        </section>
+                    }
+
+                </div>
+            }
+
+        </main>
+
+
+        <!-- =====================================================
+             RIGHT DETAILS PANEL
+             ===================================================== -->
+        @await Html.PartialAsync(
+                    "_TeacherDetailPanel",
+                    Model)
+
     </div>
 
-    <a asp-controller="Teacher"
-       asp-action="Create"
-       class="btn btn-primary">
-        Buat Tugas
-    </a>
 </div>
 
-<hr />
 
-@if (!Model.Any())
-{
-    <div class="alert alert-info">
-        Belum ada tugas yang dibuat.
-    </div>
-}
-else
-{
-    <div class="row">
-        @foreach (var task in Model)
-        {
-            <div class="col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-body">
+<script>
 
-                        <h5 class="card-title">
-                            @task.Title
-                        </h5>
+    // ---------------------------------------------------------
+    // Submission row selection
+    // ---------------------------------------------------------
 
-                        <p class="card-text">
-                            <strong>Mata Pelajaran:</strong>
-                            @task.Subject
-                        </p>
+    document
+        .querySelectorAll(".teacher-submission-row")
+        .forEach(row => {
 
-                        <p class="card-text">
-                            <strong>Batas Pengumpulan:</strong>
-                            @task.DueDate.ToString("dd/MM/yyyy HH:mm")
-                        </p>
+            row.addEventListener("click", function() {
 
-                        <hr />
+                const url = this.dataset.url;
 
-                        <p class="card-text">
-                            <strong>Pengumpulan:</strong>
-                            @task.SubmissionCount
-                        </p>
+                if (url) {
+                    window.location.href = url;
+                }
 
-                        <p class="card-text">
-                            <strong>Sudah Dinilai:</strong>
-                            @task.GradedCount
-                            /
-                            @task.SubmissionCount
-                        </p>
+            });
 
-                        <a asp-controller="Teacher"
-                           asp-action="Submissions"
-                           asp-route-id="@task.Id"
-                           class="btn btn-primary">
-                            Lihat Pengumpulan
-                        </a>
+        });
 
-                    </div>
-                </div>
-            </div>
-        }
-    </div>
-}
+
+    // ---------------------------------------------------------
+    // Open / Close each task table independently
+    // ---------------------------------------------------------
+
+    document
+        .querySelectorAll(".teacher-task-toggle")
+        .forEach(button => {
+
+            button.addEventListener("click", function() {
+
+                const targetId = this.dataset.target;
+
+                const content =
+                    document.getElementById(targetId);
+
+                if (!content) {
+                    return;
+                }
+
+                const isOpen =
+                    this.getAttribute("aria-expanded") === "true";
+
+                if (isOpen) {
+                    content.classList.add("collapsed");
+
+                    this.setAttribute(
+                        "aria-expanded",
+                        "false");
+
+                    this.querySelector(
+                        ".teacher-task-chevron")
+                        .textContent = "⌄";
+                }
+                else {
+                    content.classList.remove("collapsed");
+
+                    this.setAttribute(
+                        "aria-expanded",
+                        "true");
+
+                    this.querySelector(
+                        ".teacher-task-chevron")
+                        .textContent = "⌃";
+                }
+
+            });
+
+        });
+
+</script>
