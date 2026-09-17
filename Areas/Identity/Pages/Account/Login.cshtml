@@ -32,26 +32,22 @@
                 <h1>Masuk</h1>
 
                 <p>
-                    Silahkan masukan nama pengguna dan kata sandi anda
+                    Silahkan masukan email dan kata sandi anda
                 </p>
             </div>
 
             <form method="post">
 
-                <div asp-validation-summary="ModelOnly"
-                     class="text-danger mb-3">
-                </div>
-
                 <div class="login-field">
 
                     <label asp-for="Input.Email">
-                        Nama Pengguna
+                        Email
                     </label>
 
                     <input asp-for="Input.Email"
                            class="form-control login-input"
                            autocomplete="username"
-                           placeholder="Masukan nama pengguna anda" />
+                           placeholder="Masukan email anda" />
 
                     <span asp-validation-for="Input.Email"
                           class="text-danger">
@@ -85,6 +81,10 @@
                     <span asp-validation-for="Input.Password"
                           class="text-danger">
                     </span>
+
+                    <div asp-validation-summary="ModelOnly"
+                         class="text-danger mb-3">
+                    </div>
 
                 </div>
 

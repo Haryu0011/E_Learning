@@ -132,7 +132,7 @@ else
                 {
                     var (baseName, ext) = FileIconHelper.SplitFileName(attachment.FileName);
 
-                    <div class="student-file-item">
+                        <div class="student-file-item-in-card">
 
                         <div class="student-file-name" title="@attachment.FileName">
                             <i class="bi @FileIconHelper.GetIcon(attachment.FileName)"></i>
@@ -154,16 +154,6 @@ else
             </div>
 
         </div>
-        
-        var showScore = ViewData["ShowScore"] as bool? ?? false;
-
-        @if (showScore && Model.Score.HasValue)
-        {
-            <div class="alert alert-success mb-0 mt-3">
-                <i class="bi bi-award"></i> Nilai :
-                <strong>@Model.Score</strong>
-            </div>
-        }
     }
     else
     {

@@ -1,4 +1,5 @@
-﻿@model E_Learning.ViewModels.TeacherHistoryPageViewModel
+﻿@using E_Learning.Helpers
+@model E_Learning.ViewModels.TeacherHistoryPageViewModel
 
 @{
     ViewData["Title"] = "Riwayat Penilaian Tugas";
@@ -204,25 +205,13 @@
             }
             else
             {
-                <!-- TASK HEADER -->
+                <!-- TASK TITLE -->
 
-                <div class="teacher-details-header">
+                <div class="teacher-details-title-block">
 
-                    <div class="teacher-details-icon">
-                        ◉
-                    </div>
-
-                    <div>
-
-                        <div class="teacher-details-title">
-                            @Model.SelectedTask.Title
-                        </div>
-
-                        <div class="teacher-details-subject">
-                            @Model.SelectedTask.Subject
-                        </div>
-
-                    </div>
+                    <h2 class="teacher-details-title">
+                        @Model.SelectedTask.Title
+                    </h2>
 
                 </div>
 
@@ -233,17 +222,15 @@
 
                     <div class="teacher-meta-item">
 
-                        <span class="teacher-meta-icon">
-                            ◉
-                        </span>
+                        <i class="bi bi-book teacher-meta-icon"></i>
 
-                        <div>
+                        <div class="teacher-meta-content">
 
                             <span class="teacher-meta-label">
                                 Mata Pelajaran
                             </span>
 
-                            <strong>
+                            <strong class="teacher-meta-value">
                                 @Model.SelectedTask.Subject
                             </strong>
 
@@ -254,17 +241,15 @@
 
                     <div class="teacher-meta-item">
 
-                        <span class="teacher-meta-icon">
-                            ◉
-                        </span>
+                        <i class="bi bi-calendar3 teacher-meta-icon"></i>
 
-                        <div>
+                        <div class="teacher-meta-content">
 
                             <span class="teacher-meta-label">
                                 Tenggat Waktu
                             </span>
 
-                            <strong>
+                            <strong class="teacher-meta-value">
                                 @Model.SelectedTask.DueDate.ToString("dd/MM/yyyy, HH:mm")
                             </strong>
 
@@ -272,60 +257,83 @@
 
                     </div>
 
+
+                    @if (Model.SelectedSubmission != null)
+                    {
+                        <div class="teacher-meta-item">
+
+                            <i class="bi bi-clock teacher-meta-icon"></i>
+
+                            <div class="teacher-meta-content">
+
+                                <span class="teacher-meta-label">
+                                    Dikumpulkan pada
+                                </span>
+
+                                <strong class="teacher-meta-value">
+                                    @Model.SelectedSubmission.SubmittedAt.ToString("dd/MM/yyyy, HH:mm")
+                                </strong>
+
+                            </div>
+
+                        </div>
+                    }
+
                 </div>
+
+
+                <div class="teacher-details-divider"></div>
 
 
                 <!-- DESCRIPTION -->
 
-                <div class="teacher-details-section">
+                <section class="teacher-details-section">
 
-                    <div class="teacher-details-section-title">
-                        ◉ Deskripsi
-                    </div>
+                    <h3 class="teacher-details-section-title">
+                        Deskripsi
+                    </h3>
 
                     <div class="teacher-details-description">
                         @Model.SelectedTask.Description
                     </div>
 
-                </div>
+                </section>
 
 
                 <!-- MATERIAL -->
                 @if (Model.SelectedTask.Attachments.Any())
                 {
-                    <div class="teacher-details-section">
+                    <section class="teacher-details-section">
 
-                        <div class="teacher-details-section-title">
-                            ◉ Instruksi dan Materi
-                        </div>
+                        <h3 class="teacher-details-section-title">
+                            Instruksi dan Materi
+                        </h3>
 
-                        <div class="teacher-file-list">
+                        <div class="teacher-material-list">
 
                             @foreach (
                                 var attachment
                                 in Model.SelectedTask.Attachments)
                             {
-                                <div class="teacher-file-item">
+                                <div class="teacher-material-item">
 
-                                    <div class="teacher-file-name"
-                                         title="@attachment.FileName">
-
-                                        <span class="teacher-file-icon">
-                                            ◉
-                                        </span>
-
-                                        <span>
-                                            @attachment.FileName
-                                        </span>
-
-                                    </div>
+                                    <i class="bi bi-paperclip teacher-material-icon"></i>
 
                                     <a href="@attachment.FilePath"
                                        target="_blank"
-                                       class="teacher-file-action"
-                                       title="Buka file">
+                                       class="teacher-material-name"
+                                       title="@attachment.FileName">
 
-                                        ◉
+                                        @attachment.FileName
+
+                                    </a>
+
+                                    <a href="@attachment.FilePath"
+                                       class="teacher-material-action"
+                                       download
+                                       title="Download">
+
+                                        <i class="bi bi-download"></i>
 
                                     </a>
 
@@ -334,7 +342,7 @@
 
                         </div>
 
-                    </div>
+                    </section>
                 }
 
 
@@ -343,9 +351,7 @@
                 {
                     <div class="teacher-details-select-hint">
 
-                        <span class="teacher-details-select-icon">
-                            ◉
-                        </span>
+                        <i class="bi bi-info-circle"></i>
 
                         <p>
                             Pilih salah satu tugas siswa
@@ -357,98 +363,55 @@
                 }
                 else
                 {
-                    <div class="teacher-details-section">
-
-                        <div class="teacher-details-section-title">
-                            ◉ Pengumpulan Siswa
-                        </div>
-
-
-                        <div class="teacher-submission-info">
-
-                            <div class="teacher-submission-student">
-                                @Model.SelectedSubmission.StudentEmail
-                            </div>
-
-                            <div>
-                                Dikumpulkan:
-
-                                <strong>
-                                    @Model.SelectedSubmission.SubmittedAt.ToString("dd/MM/yyyy, HH:mm")
-                                </strong>
-                            </div>
-
-                        </div>
+                    <section class="teacher-details-section">
 
                         <!-- SUBMITTED FILES -->
                         @if (Model.SelectedSubmission.Attachments.Any())
                         {
-                            <div class="teacher-details-section">
 
-                                <div class="teacher-details-section-title">
-                                    ◉ Lampiran Jawaban
-                                </div>
+                            <hr />
 
-                                <div class="teacher-file-list">
+                            <h3 class="teacher-details-section-title">
+                                Lampiran Jawaban
+                            </h3>
 
-                                    @foreach (
-                                        var attachment
-                                        in Model.SelectedSubmission.Attachments)
-                                    {
-                                        <div class="teacher-file-item">
+                            <div class="teacher-material-list">
 
-                                            <div class="teacher-file-name"
-                                                 title="@attachment.FileName">
+                                @foreach (
+                                    var attachment
+                                    in Model.SelectedSubmission.Attachments)
+                                {
+                                    <div class="teacher-material-item">
 
-                                                <span class="teacher-file-icon">
-                                                    ◉
-                                                </span>
+                                        <i class="bi @FileIconHelper.GetIcon(attachment.FileName) teacher-material-icon"></i>
 
-                                                <span>
-                                                    @attachment.FileName
-                                                </span>
+                                        <a href="@attachment.FilePath"
+                                           target="_blank"
+                                           class="teacher-material-name"
+                                           title="@attachment.FileName">
 
-                                            </div>
+                                            @attachment.FileName
 
-                                            <a href="@attachment.FilePath"
-                                               target="_blank"
-                                               class="teacher-file-action"
-                                               title="Buka file">
+                                        </a>
 
-                                                ◉
+                                        <a href="@attachment.FilePath"
+                                           class="teacher-material-action"
+                                           download
+                                           title="Download">
 
-                                            </a>
+                                            <i class="bi bi-download"></i>
 
-                                        </div>
-                                    }
+                                        </a>
 
-                                </div>
+                                    </div>
+                                }
 
                             </div>
                         }
 
 
                         <!-- GRADE -->
-                        @if (Model.SelectedSubmission.IsGraded)
-                        {
-                            <div class="teacher-grade-box">
-
-                                <div>
-                                    Nilai
-                                </div>
-
-                                <strong>
-                                    @Model.SelectedSubmission.Score
-                                </strong>
-
-                            </div>
-
-                            <div class="teacher-grade-locked">
-                                Nilai sudah diberikan dan tidak dapat
-                                diubah.
-                            </div>
-                        }
-                        else
+                        @if (!Model.SelectedSubmission.IsGraded)
                         {
                             <form asp-controller="Teacher"
                                   asp-action="Grade"
@@ -457,17 +420,21 @@
 
                                 @Html.AntiForgeryToken()
 
-                                <div class="teacher-grade-input-label">
-                                    Nilai
-                                </div>
+                                <div class="teacher-grade-input-row">
 
-                                <input name="Score"
-                                       type="number"
-                                       min="0"
-                                       max="100"
-                                       class="teacher-grade-input"
-                                       placeholder="Masukkan nilai"
-                                       required />
+                                    <strong>
+                                        Nilai:
+                                    </strong>
+
+                                    <input name="Score"
+                                           type="number"
+                                           min="0"
+                                           max="100"
+                                           class="teacher-grade-input"
+                                           placeholder="Masukkan nilai"
+                                           required />
+
+                                </div>
 
                                 <button type="submit"
                                         class="teacher-grade-button">
@@ -479,7 +446,7 @@
                             </form>
                         }
 
-                    </div>
+                    </section>
                 }
 
             }

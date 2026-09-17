@@ -2,17 +2,13 @@
 
 <div class="teacher-sidebar">
 
-    <div class="teacher-sidebar-brand">
-        E-Learning
-    </div>
-
     <nav class="teacher-sidebar-nav">
 
         <a asp-controller="Teacher"
            asp-action="Index"
            class="teacher-nav-link @(Model == "Dashboard" ? "active" : "")">
 
-            <span class="teacher-nav-icon">◉</span>
+            <i class="bi bi-house-door teacher-nav-icon"></i>
 
             <span>Dashboard</span>
 
@@ -22,7 +18,7 @@
            asp-action="History"
            class="teacher-nav-link @(Model == "History" ? "active" : "")">
 
-            <span class="teacher-nav-icon">◉</span>
+            <i class="bi bi-clock-history teacher-nav-icon"></i>
 
             <span>Riwayat</span>
 
@@ -32,7 +28,7 @@
            asp-action="Create"
            class="teacher-nav-link @(Model == "Create" ? "active" : "")">
 
-            <span class="teacher-nav-icon">◉</span>
+            <i class="bi bi-plus-lg teacher-nav-icon"></i>
 
             <span>Buat Tugas Baru</span>
 
@@ -48,6 +44,7 @@
               method="post">
 
             <button type="submit">
+                <i class="bi bi-box-arrow-right"></i>
                 Keluar
             </button>
 
