@@ -65,9 +65,7 @@
                                         aria-expanded="true"
                                         aria-controls="@contentId">
 
-                                    <span class="teacher-history-chevron">
-                                        ⌃
-                                    </span>
+                                <i class="bi bi-chevron-up teacher-history-chevron"></i>
 
                                 </button>
 
@@ -473,9 +471,6 @@
                         "aria-expanded",
                         "false");
 
-                    this.querySelector(
-                        ".teacher-history-chevron")
-                        .textContent = "⌄";
                 }
                 else {
                     content.classList.remove("collapsed");
@@ -484,9 +479,6 @@
                         "aria-expanded",
                         "true");
 
-                    this.querySelector(
-                        ".teacher-history-chevron")
-                        .textContent = "⌃";
                 }
 
             });

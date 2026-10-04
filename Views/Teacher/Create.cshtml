@@ -21,7 +21,7 @@
 
             <div class="teacher-main-header">
 
-                <h1>Buat Tugas Baru</h1>
+                <h1>Buat Tugas</h1>
 
                 <hr />
             </div>
@@ -36,8 +36,7 @@
                     @Html.AntiForgeryToken()
 
                     <div asp-validation-summary="ModelOnly"
-                         class="teacher-create-validation">
-                    </div>
+                         class="teacher-create-validation"></div>
 
 
                     <!-- JUDUL -->
@@ -46,12 +45,12 @@
 
                         <label asp-for="Title"
                                class="teacher-form-label">
-                            Judul Tugas
+                            Judul
                         </label>
 
                         <input asp-for="Title"
                                class="teacher-form-input"
-                               placeholder="Contoh: Puisi Alam Indonesia" />
+                               placeholder="Masukan judul tugas" />
 
                         <span asp-validation-for="Title"
                               class="teacher-form-error">
@@ -71,7 +70,7 @@
 
                         <input asp-for="Subject"
                                class="teacher-form-input"
-                               placeholder="Contoh: Bahasa Indonesia" />
+                               placeholder="Masukan Mata Pelajaran yang diajar" />
 
                         <span asp-validation-for="Subject"
                               class="teacher-form-error">
@@ -91,8 +90,8 @@
 
                         <textarea asp-for="Description"
                                   class="teacher-form-textarea"
-                                  rows="7"
-                                  placeholder="Tuliskan deskripsi tugas..."></textarea>
+                                  rows="3"
+                                  placeholder="Masukan deskripsi tugas"></textarea>
 
                         <span asp-validation-for="Description"
                               class="teacher-form-error">
@@ -107,7 +106,7 @@
 
                         <label asp-for="DueDate"
                                class="teacher-form-label">
-                            Batas Pengumpulan
+                            Tenggat Waktu
                         </label>
 
                         <div class="teacher-form-input-icon">
@@ -131,30 +130,26 @@
 
                         <label asp-for="Attachments"
                                class="teacher-form-label">
-                            Lampiran Materi
+                            Lampiran
                         </label>
 
-                        <div class="teacher-upload-box">
-
-                            <div class="teacher-upload-icon">
-                                📖
-                            </div>
-
-                            <div class="teacher-upload-title">
-                                Pilih lampiran tugas
-                            </div>
-
-                            <div class="teacher-upload-description">
-                                File akan tersedia untuk siswa
-                                pada halaman detail tugas.
-                            </div>
+                        <label class="teacher-file-picker">
 
                             <input asp-for="Attachments"
                                    type="file"
                                    multiple
-                                   class="teacher-form-file" />
+                                   class="teacher-file-input" />
 
-                        </div>
+                            <span class="teacher-file-button">
+                                Tambah +
+                            </span>
+
+                            <span class="teacher-file-name"
+                                  id="attachmentNames">
+                                Belum ada file
+                            </span>
+
+                        </label>
 
                         <span asp-validation-for="Attachments"
                               class="teacher-form-error">
@@ -175,7 +170,7 @@
 
                         <button type="submit"
                                 class="teacher-create-button">
-                            Buat Tugas
+                            Simpan Tugas
                         </button>
 
                     </div>
@@ -354,6 +349,33 @@
                 }, 250);
 
             }, 3000);
+
+        }
+
+
+        // Show the chosen attachment names next to "Tambah +".
+        const attachmentInput =
+            document.getElementById("Attachments");
+
+        const attachmentNames =
+            document.getElementById("attachmentNames");
+
+        if (attachmentInput && attachmentNames) {
+
+            attachmentInput.addEventListener("change", function () {
+
+                const names = Array.from(this.files)
+                    .map(file => file.name);
+
+                attachmentNames.textContent = names.length
+                    ? names.join(", ")
+                    : "Belum ada file";
+
+                attachmentNames.classList.toggle(
+                    "has-file",
+                    names.length > 0);
+
+            });
 
         }
 

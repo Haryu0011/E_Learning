@@ -1190,6 +1190,17 @@ body {
     line-height: 1;
 }
 
+.teacher-task-chevron,
+.teacher-history-chevron {
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.teacher-task-toggle[aria-expanded="false"] .teacher-task-chevron,
+.teacher-history-toggle[aria-expanded="false"] .teacher-history-chevron {
+    transform: rotate(180deg);
+}
+
 .teacher-task-content {
     overflow: hidden;
     max-height: 1000px;
@@ -1786,6 +1797,13 @@ input[type=number] {
 .teacher-history-chevron {
     line-height: 1;
     font-size: 1rem;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.teacher-task-toggle[aria-expanded="false"] .teacher-task-chevron,
+.teacher-history-toggle[aria-expanded="false"] .teacher-history-chevron {
+    transform: rotate(180deg);
 }
 
 .teacher-history-content {
@@ -1886,49 +1904,70 @@ input[type=number] {
 
 .teacher-create-main {
     overflow-y: auto;
-    padding: 28px 30px;
+    padding: 40px 66px;
 }
 
-.teacher-create-main > .teacher-main-header,
-.teacher-create-main > .teacher-create-card {
-    width: min(760px, 100%);
-    margin-left: auto;
-    margin-right: auto;
-}
+    .teacher-create-main > .teacher-main-header,
+    .teacher-create-main > .teacher-create-card {
+        width: min(690px, 100%);
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .teacher-create-main > .teacher-main-header {
+        margin-bottom: 32px;
+    }
+
+        .teacher-create-main > .teacher-main-header h1 {
+            font-size: 2rem;
+            line-height: 1.2;
+        }
+
+        .teacher-create-main > .teacher-main-header hr {
+            margin: 30px 0 0;
+            border-color: #999;
+            opacity: 1;
+        }
 
 .teacher-form-group {
-    margin-bottom: 22px;
+    margin-bottom: 34px;
 }
 
 .teacher-form-label {
     display: block;
-    margin-bottom: 7px;
-    color: #222;
-    font-size: 0.88rem;
-    font-weight: 700;
+    margin-bottom: 4px;
+    color: #111;
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.2;
 }
 
 .teacher-form-input,
 .teacher-form-textarea {
     width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #d8d8d8;
-    border-radius: 8px;
+    padding: 8px 10px;
+    border: 1px solid #888;
+    border-radius: 6px;
     background: #ffffff;
     color: #333;
-    font-size: 0.9rem;
+    font-size: 0.875rem;
+    line-height: 1.35;
     outline: none;
 }
 
+    .teacher-form-input::placeholder,
+    .teacher-form-textarea::placeholder {
+        color: #777;
+    }
+
     .teacher-form-input:focus,
     .teacher-form-textarea:focus {
-        border-color: #177f8d;
+        border-color: #0d7a87;
     }
 
 .teacher-form-textarea {
     resize: vertical;
-    min-height: 150px;
-    line-height: 1.5;
+    min-height: 75px;
 }
 
 .teacher-form-error {
@@ -1946,69 +1985,79 @@ input[type=number] {
     background: #fff0f0;
 }
 
+    .teacher-create-validation:empty {
+        display: none;
+    }
+
 .teacher-form-input-icon {
     position: relative;
     display: flex;
     align-items: start;
 }
 
-    .teacher-form-input-icon > span {
-        position: absolute;
-        left: 12px;
-        color: #177f8d;
-        pointer-events: none;
+.teacher-form-input-with-icon {
+    height: 44px;
+}
+
+.teacher-file-picker {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    height: 42px;
+    border: 1px solid #999;
+    border-radius: 6px;
+    background: #ffffff;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+    .teacher-file-picker:focus-within {
+        border-color: #0d7a87;
     }
 
-.teacher-form-input-with-icon {
-    padding-left: 20px;
+.teacher-file-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
 }
 
-.teacher-upload-box {
-    padding: 24px;
-    border: 2px dashed #b8dfe2;
-    border-radius: 10px;
-    background: #f8ffff;
-    text-align: center;
-}
-
-.teacher-upload-icon {
-    width: 44px;
-    height: 44px;
+.teacher-file-button {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 10px;
-    border-radius: 50%;
-    background: #dff4f5;
-    color: #177f8d;
-    font-size: 20px;
+    flex: 0 0 121px;
+    border-right: 1px solid #999;
+    background: #e1e1e1;
+    color: #111;
+    font-size: 0.875rem;
 }
 
-.teacher-upload-title {
-    color: #333;
-    font-size: 0.9rem;
-    font-weight: 700;
+.teacher-file-picker:hover .teacher-file-button {
+    background: #d6d6d6;
 }
 
-.teacher-upload-description {
-    margin-top: 4px;
-    margin-bottom: 15px;
-    color: #777;
-    font-size: 0.78rem;
+.teacher-file-name {
+    flex: 1;
+    min-width: 0;
+    align-self: center;
+    padding: 0 10px;
+    overflow: hidden;
+    color: #999;
+    font-size: 0.875rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-.teacher-form-file {
-    width: 100%;
-    font-size: 0.82rem;
-}
+    .teacher-file-name.has-file {
+        color: #333;
+    }
 
 .teacher-form-actions {
     display: flex;
     justify-content: flex-end;
-    gap: 10px;
-    margin-top: 28px;
-    padding-top: 20px;
-    border-top: 1px solid #ececec;
+    gap: 16px;
 }
 
 .teacher-cancel-button,
@@ -2016,34 +2065,34 @@ input[type=number] {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 120px;
-    padding: 10px 16px;
-    border-radius: 8px;
-    font-size: 0.88rem;
+    width: 200px;
+    height: 50px;
+    border-radius: 10px;
+    font-size: 1rem;
     font-weight: 700;
     text-decoration: none;
     cursor: pointer;
 }
 
 .teacher-cancel-button {
-    border: 1px solid #d7d7d7;
+    border: 1px solid #111;
     background: #ffffff;
-    color: #444;
+    color: #111;
 }
 
     .teacher-cancel-button:hover {
         background: #f6f6f6;
-        color: #333;
+        color: #111;
     }
 
 .teacher-create-button {
     border: 0;
-    background: #178796;
+    background: #0d7a87;
     color: #ffffff;
 }
 
     .teacher-create-button:hover {
-        background: #127684;
+        background: #0b6873;
     }
 
 
@@ -2055,39 +2104,56 @@ input[type=number] {
     overflow-y: auto;
 }
 
+    .teacher-create-details .teacher-details-title {
+        font-size: 1.75rem;
+    }
+
+    .teacher-create-details .teacher-details-subject {
+        color: #111;
+    }
+
+    .teacher-create-details hr {
+        margin: 24px 0 0;
+        border-color: #999;
+        opacity: 1;
+    }
+
 .teacher-create-info {
     display: flex;
     flex-direction: column;
-    gap: 18px;
-    margin-top: 22px;
+    gap: 32px;
+    margin-top: 28px;
 }
 
 .teacher-create-info-item {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 8px;
 }
 
 .teacher-create-info-icon {
-    width: 24px;
-    flex: 0 0 24px;
-    color: #177f8d;
+    width: 14px;
+    flex: 0 0 14px;
+    color: #0d7a87;
+    line-height: 1.2;
     text-align: center;
 }
 
 .teacher-create-info-item strong {
     display: block;
-    margin-bottom: 3px;
-    color: #333;
-    font-size: 0.84rem;
+    margin-bottom: 6px;
+    color: #111;
+    font-size: 1rem;
+    line-height: 1.2;
 }
 
 .teacher-create-info-item p {
     margin: 0;
     color: #777;
-    font-size: 0.79rem;
-    line-height: 1.45;
+    font-size: 0.875rem;
+    line-height: 1.25;
 }
+
 
 
 /* =========================================================
@@ -2142,7 +2208,7 @@ input[type=number] {
 
 @media (max-width: 1100px) {
 
-    .teacher-create-card {
-        padding: 22px;
+    .teacher-create-main {
+        padding: 28px 30px;
     }
 }

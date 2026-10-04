@@ -68,9 +68,7 @@
                                         aria-expanded="true"
                                         aria-controls="@tableId">
 
-                                    <span class="teacher-task-chevron">
-                                        ⌃
-                                    </span>
+                                <i class="bi bi-chevron-up teacher-task-chevron"></i>
 
                                 </button>
 
@@ -208,12 +206,36 @@
 
 </div>
 
+//Snackbar for success and error messages
+
+@if (TempData["Success"] != null)
+{
+    <div class="teacher-snackbar teacher-snackbar-success" id="teacherSnackbar">
+        @TempData["Success"]
+    </div>
+}
+
+@if (TempData["Error"] != null)
+{
+    <div class="teacher-snackbar teacher-snackbar-error" id="teacherSnackbar">
+        @TempData["Error"]
+    </div>
+}
 
 <script>
 
     // ---------------------------------------------------------
     // Submission row selection
     // ---------------------------------------------------------
+
+    const snackbar = document.getElementById("teacherSnackbar");
+
+        if (snackbar) {
+            setTimeout(() => {
+                snackbar.classList.add("teacher-snackbar-hide");
+                setTimeout(() => snackbar.remove(), 250);
+            }, 3000);
+        }
 
     document
         .querySelectorAll(".teacher-submission-row")
@@ -261,9 +283,6 @@
                         "aria-expanded",
                         "false");
 
-                    this.querySelector(
-                        ".teacher-task-chevron")
-                        .textContent = "⌄";
                 }
                 else {
                     content.classList.remove("collapsed");
@@ -272,9 +291,6 @@
                         "aria-expanded",
                         "true");
 
-                    this.querySelector(
-                        ".teacher-task-chevron")
-                        .textContent = "⌃";
                 }
 
             });

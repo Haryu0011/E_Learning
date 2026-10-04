@@ -674,7 +674,7 @@ namespace E_Learning.Controllers
             await _context.SaveChangesAsync();
 
 
-            TempData["Success"] = "Tugas berhasil dikumpulkan.";
+            TempData["SubmissionSuccess"] = true;
 
 
             // Return to the dashboard and keep the submitted task
