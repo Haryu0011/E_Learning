@@ -1,4 +1,6 @@
-﻿@using E_Learning.Helpers
+[Updated _TaskDetailPanel.cshtml]
+[changes were made on line 250-253, 287-304, 137, 139-141, 96, 98-99]
+@using E_Learning.Helpers
 @model E_Learning.ViewModels.StudentTaskDetailViewModel?
 
 <!-- RIGHT DETAILS PANEL -->
@@ -6,15 +8,10 @@
 
 @if (Model == null)
 {
-    <div class="student-details-empty" 
-        style="height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: left;">
+    <div class="student-details-empty">
         <div>
-            <div class="kaomoji" 
-                style="font-size: 36px;font-weight: bold;">o(^-^o)</div>
-            <p>Klik Tugas untuk melihat detail.</p>
+            <div class="kaomoji" style="font-size: 36px;font-weight: bold;">o(^-^o)</div>
+            <p>Pilih tugas untuk melihat detail.</p>
         </div>
     </div>
 }
@@ -128,7 +125,7 @@ else
 
             <div class="lampiran-header">
                 <div class="lampiran-header-title">
-                    <i class="bi bi-file-earmark-text"></i> Lampiran Tugas
+                    <i class="bi bi-paperclip"></i> Lampiran Tugas
                 </div>
             </div>
 
@@ -137,7 +134,7 @@ else
                 {
                     var (baseName, ext) = FileIconHelper.SplitFileName(attachment.FileName);
 
-                        <div class="student-file-item-in-card">
+                    <div class="student-file-item">
 
                         <div class="student-file-name" title="@attachment.FileName">
                             <i class="bi @FileIconHelper.GetIcon(attachment.FileName)"></i>
@@ -159,6 +156,16 @@ else
             </div>
 
         </div>
+        
+        var showScore = ViewData["ShowScore"] as bool? ?? false;
+
+        @if (showScore && Model.Score.HasValue)
+        {
+            <div class="alert alert-success mb-0 mt-3">
+                <i class="bi bi-award"></i> Nilai :
+                <strong>@Model.Score</strong>
+            </div>
+        }
     }
     else
     {
@@ -176,7 +183,7 @@ else
 
                 <div class="lampiran-header active">
                     <div class="lampiran-header-title">
-                        <i class="bi bi-file-earmark-text"></i> Lampiran Tugas
+                        <i class="bi bi-paperclip"></i> Lampiran Tugas
                     </div>
 
                     <button type="button"
@@ -242,8 +249,10 @@ else
 
         let selectedFiles = new DataTransfer();
 
-        function fileIconClass(name) {
-            const ext = (name.split(".").pop() || "").toLowerCase();
+        function splitFileName(name) {
+            const dotIndex = name.lastIndexOf(".");
+            if (dotIndex <= 0) return { baseName: name, ext: "" };
+            return { baseName: name.slice(0, dotIndex), ext: name.slice(dotIndex) };
 
             if (ext === "pdf") return "bi-file-earmark-pdf";
             if (ext === "doc" || ext === "docx") return "bi-file-earmark-word";
@@ -251,16 +260,6 @@ else
             if (["jpg", "jpeg", "png", "gif"].includes(ext)) return "bi-file-earmark-image";
 
             return "bi-file-earmark";
-        }
-
-        function splitFileName(name) {
-            const dotIndex = name.lastIndexOf(".");
-
-            if (dotIndex <= 0) {
-                return { baseName: name, ext: "" };
-            }
-
-            return { baseName: name.slice(0, dotIndex), ext: name.slice(dotIndex) };
         }
 
         function render() {
@@ -279,11 +278,15 @@ else
 
                 const nameDiv = document.createElement("div");
                 nameDiv.className = "student-file-name";
-                nameDiv.title = file.name;
 
                 const icon = document.createElement("i");
                 icon.className = "bi " + fileIconClass(file.name);
+
                 nameDiv.appendChild(icon);
+
+                const nameText = document.createElement("span");
+                nameText.className = "file-text";
+                nameDiv.title = file.name;
 
                 const { baseName, ext } = splitFileName(file.name);
 
@@ -300,7 +303,7 @@ else
 
                 nameText.appendChild(baseSpan);
                 nameText.appendChild(extSpan);
-                nameDiv.appendChild(nameText);
+                nameDiv.appendChild(nameText); nameDiv.appendChild(nameText);
 
                 const removeBtn = document.createElement("button");
                 removeBtn.type = "button";
@@ -352,3 +355,38 @@ else
         });
     })();
 </script>
+
+[updated FileIconHelper.cs]
+[Changes were made on line 18-28
+namespace E_Learning.Helpers
+{
+    public static class FileIconHelper
+    {
+        public static string GetIcon(string fileName)
+        {
+            var ext = System.IO.Path.GetExtension(fileName)?.ToLowerInvariant();
+
+            return ext switch
+            {
+                ".pdf" => "bi-file-earmark-pdf",
+                ".doc" or ".docx" => "bi-file-earmark-word",
+                ".zip" or ".rar" => "bi-file-earmark-zip",
+                ".jpg" or ".jpeg" or ".png" or ".gif" => "bi-file-earmark-image",
+                _ => "bi-file-earmark"
+            };
+        }
+
+        // Splits "Instruksi_Tugas_Membuat_Pantun.pdf" into
+        // ("Instruksi_Tugas_Membuat_Pantun", ".pdf") so the UI can
+        // truncate only the name and always keep the extension visible.
+        public static (string BaseName, string Extension) SplitFileName(string fileName)
+        {
+            var extension = System.IO.Path.GetExtension(fileName);
+            var baseName = System.IO.Path.GetFileNameWithoutExtension(fileName);
+
+            return (baseName, extension);
+        }
+    }
+}
+
+our chat were interupted, so I haven't fully applied the changes you were showing, last steps were observing changes on site.css file. 

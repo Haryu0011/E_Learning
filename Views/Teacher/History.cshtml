@@ -23,7 +23,6 @@
             <div class="teacher-main-header">
 
                 <h1>Riwayat Penilaian Tugas</h1>
-                <p> Berikut adalah rangkuman nilai untuk setiap murid</p>
 
             </div>
 
@@ -407,43 +406,6 @@
                                 }
 
                             </div>
-                        }
-
-
-                        <!-- GRADE -->
-                        @if (!Model.SelectedSubmission.IsGraded)
-                        {
-                            <form asp-controller="Teacher"
-                                  asp-action="Grade"
-                                  asp-route-id="@Model.SelectedSubmission.SubmissionId"
-                                  method="post">
-
-                                @Html.AntiForgeryToken()
-
-                                <div class="teacher-grade-input-row">
-
-                                    <strong>
-                                        Nilai:
-                                    </strong>
-
-                                    <input name="Score"
-                                           type="number"
-                                           min="0"
-                                           max="100"
-                                           class="teacher-grade-input"
-                                           placeholder="Masukkan nilai"
-                                           required />
-
-                                </div>
-
-                                <button type="submit"
-                                        class="teacher-grade-button">
-
-                                    Beri Nilai
-
-                                </button>
-
-                            </form>
                         }
 
                     </section>
