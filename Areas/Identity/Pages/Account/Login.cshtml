@@ -101,6 +101,9 @@
 
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
+    @* jQuery must load before the validation scripts in the partial. *@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
     <partial name="_ValidationScriptsPartial" />
 
     <script>
@@ -132,6 +135,46 @@
                 }
 
             });
+
+            // ---------------------------------------------------------
+            // Auto-hide every error message after a timeout.
+            // Covers the two field messages and the summary
+            // ("Username atau password salah.", "Akun sedang dikunci.").
+            // ---------------------------------------------------------
+            const ERROR_TIMEOUT_MS = 5000;
+
+            const errorTimers = new WeakMap();
+
+            function scheduleErrorHide(element) {
+
+                clearTimeout(errorTimers.get(element));
+
+                if (!element.textContent.trim()) {
+                    return;
+                }
+
+                errorTimers.set(element, setTimeout(function() {
+                    element.textContent = "";
+                }, ERROR_TIMEOUT_MS));
+            }
+
+            document
+                .querySelectorAll("form .text-danger")
+                .forEach(function(element) {
+
+                    // Errors rendered by the server on page load.
+                    scheduleErrorHide(element);
+
+                    // Errors added or changed later by client-side
+                    // validation: restart the timer each time.
+                    new MutationObserver(function() {
+                        scheduleErrorHide(element);
+                    }).observe(element, {
+                        childList: true,
+                        subtree: true,
+                        characterData: true
+                    });
+                });
     </script>
 
 </body>
